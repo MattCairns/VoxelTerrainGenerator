@@ -20,6 +20,7 @@ public class Main {
         while(!Display.isCloseRequested()) {
             update();
             Display.update();
+            Display.sync(60);
         }
 
         Display.destroy();
@@ -31,42 +32,8 @@ public class Main {
 
         GL11.glLoadIdentity();
 
-        GL11.glTranslatef(0f,0.0f,-7f);
-        GL11.glRotatef(45f,0.0f,1.0f,0.0f);
-        GL11.glColor3f(0.5f,0.5f,1.0f);
+        Block.multiCreateBlocks(5);
 
-        GL11.glBegin(GL11.GL_QUADS);
-        GL11.glColor3f(1.0f,1.0f,0.0f);
-        GL11.glVertex3f( 1.0f, 1.0f,-1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f,-1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f, 1.0f);
-        GL11.glVertex3f( 1.0f, 1.0f, 1.0f);
-        GL11.glColor3f(1.0f,0.5f,0.0f);
-        GL11.glVertex3f( 1.0f,-1.0f, 1.0f);
-        GL11.glVertex3f(-1.0f,-1.0f, 1.0f);
-        GL11.glVertex3f(-1.0f,-1.0f,-1.0f);
-        GL11.glVertex3f( 1.0f,-1.0f,-1.0f);
-        GL11.glColor3f(1.0f,0.0f,0.0f);
-        GL11.glVertex3f( 1.0f, 1.0f, 1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f, 1.0f);
-        GL11.glVertex3f(-1.0f,-1.0f, 1.0f);
-        GL11.glVertex3f( 1.0f,-1.0f, 1.0f);
-        GL11.glColor3f(1.0f,1.0f,0.0f);
-        GL11.glVertex3f( 1.0f,-1.0f,-1.0f);
-        GL11.glVertex3f(-1.0f,-1.0f,-1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f,-1.0f);
-        GL11.glVertex3f( 1.0f, 1.0f,-1.0f);
-        GL11.glColor3f(0.0f,0.0f,1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f, 1.0f);
-        GL11.glVertex3f(-1.0f, 1.0f,-1.0f);
-        GL11.glVertex3f(-1.0f,-1.0f,-1.0f);
-        GL11.glVertex3f(-1.0f,-1.0f, 1.0f);
-        GL11.glColor3f(1.0f,0.0f,1.0f);
-        GL11.glVertex3f( 1.0f, 1.0f,-1.0f);
-        GL11.glVertex3f( 1.0f, 1.0f, 1.0f);
-        GL11.glVertex3f( 1.0f,-1.0f, 1.0f);
-        GL11.glVertex3f( 1.0f,-1.0f,-1.0f);
-        GL11.glEnd();
 
     }
 
@@ -82,10 +49,10 @@ public class Main {
         GL11.glLoadIdentity();
 
         GLU.gluPerspective(
-                67.0f,
-                1280.0f/720.0f,
-                0.1f,
-                100.0f);
+                67.0f, //FOV
+                1280.0f/720.0f, //Aspect Ratio
+                0.1f, //zNear
+                1000.0f); //zFar
 
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_NICEST);

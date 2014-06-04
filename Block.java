@@ -19,7 +19,6 @@ public class Block {
             }
             GL11.glTranslatef(2f, -6f, 0);
         }
-
     }
 
     public static void createBlock() {//float x, float y, float z) {
@@ -28,7 +27,6 @@ public class Block {
         float l_width = 1.0f;
 
 
-        GL11.glRotatef(45f,0.5f,1.0f,0.0f);
         GL11.glColor3f(0.5f,0.5f,1.0f);
 
         GL11.glBegin(GL11.GL_LINE_LOOP);

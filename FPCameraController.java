@@ -19,17 +19,17 @@ public class FPCameraController {
         position = new Vector3f(x,y,z);
     }
 
-    public void yaw(float value) { yaw += value; }
-    public void pitch(float value) { pitch += value; }
+    public void yaw(float value) { yaw -= value; }
+    public void pitch(float value) { pitch -= value; }
 
     public void walkForward(float distance) {
-        position.x -= distance * (float)Math.sin(Math.toRadians(yaw));
-        position.y += distance * (float)Math.cos(Math.toRadians(yaw));
+        position.x += distance * (float)Math.sin(Math.toRadians(yaw));
+        position.z -= distance * (float)Math.cos(Math.toRadians(yaw));
     }
 
     public void walkBackwards(float distance) {
-        position.x += distance * (float)Math.sin(Math.toRadians(yaw));
-        position.y -= distance * (float)Math.cos(Math.toRadians(yaw));
+        position.x -= distance * (float)Math.sin(Math.toRadians(yaw));
+        position.y += distance * (float)Math.cos(Math.toRadians(yaw));
     }
 
     public void strafeLeft(float distance) {

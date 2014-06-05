@@ -11,6 +11,7 @@ import org.lwjgl.util.glu.GLU;
 
 public class Main {
     FPCameraController camera = new FPCameraController(0,0,0);
+    Chunk chunk = new Chunk();
     float lastFrame = 0.0f;
 
 
@@ -23,7 +24,7 @@ public class Main {
         }
 
         InitGL();
-
+        chunk.createBlock();
 
         while(!Display.isCloseRequested()) {
             update();
@@ -43,13 +44,20 @@ public class Main {
         controlCamera();
 
 
-        Block.multiCreateBlocks(10);
+        chunk.drawChunk();
 
 
     }
 
     private void InitGL() {
+        //Enable Vertex Buffer Object rendering (VBO)
+        GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+        GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+
         GL11.glEnable(GL11.GL_TEXTURE_2D);
+
+        //Automatically removes faces not visible to camera.
+        GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glShadeModel(GL11.GL_SMOOTH);
         GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         GL11.glClearDepth(1.0);

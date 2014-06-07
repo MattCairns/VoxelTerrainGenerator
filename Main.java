@@ -11,7 +11,9 @@ import org.lwjgl.util.glu.GLU;
 
 public class Main {
     FPCameraController camera = new FPCameraController(0,0,0);
-    Chunk chunk = new Chunk();
+    Chunk chunk = new Chunk(0,0);
+    Chunk chunk0 = new Chunk(32.0f, 0);
+    Chunk chunk1 = new Chunk(32.0f, 32.0f);
     float lastFrame = 0.0f;
 
 
@@ -23,8 +25,11 @@ public class Main {
             e.printStackTrace();
         }
 
-        InitGL();
         chunk.createBlock();
+        chunk0.createBlock();
+        chunk1.createBlock();
+
+        InitGL();
 
         while(!Display.isCloseRequested()) {
             update();
@@ -45,6 +50,8 @@ public class Main {
 
 
         chunk.drawChunk();
+        chunk0.drawChunk();
+        chunk1.drawChunk();
 
 
     }

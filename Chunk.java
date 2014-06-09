@@ -29,19 +29,17 @@ public class Chunk {
     private float xOffset = 0;
     private float zOffset = 0;
 
-    private Block blocks[][][] = new Block[CHUNK_SIZE][256][CHUNK_SIZE];
+    private Block blocks[][][] = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 
     public Chunk(float x, float z) {
-        xOffset = x;
-        zOffset = z;
-
-
+        xOffset = x*32.0f;
+        zOffset = z*32.0f;
     }
 
     public void createBlocks() {
         Random random = new Random();
         for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int y = 0; y < 256; y++) {
+            for (int y = 0; y < CHUNK_SIZE; y++) {
                 for (int z = 0; z < CHUNK_SIZE; z++) {
                     blocks[x][y][z] = new Block();
 
@@ -53,7 +51,7 @@ public class Chunk {
 
     public void drawChunk() {
         for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int y = 0; y < 256; y++) {
+            for (int y = 0; y < CHUNK_SIZE; y++) {
                 for (int z = 0; z < CHUNK_SIZE; z++) {
                     glTranslatef(x * 2, y * 2, z * 2);
                     if(blocks[x][y][z].getActive()) {
@@ -64,6 +62,7 @@ public class Chunk {
             }
         }
     }
+
     public void drawBlock() {
         GL11.glPushMatrix();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);

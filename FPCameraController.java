@@ -46,6 +46,7 @@ public class FPCameraController {
         GL11.glRotatef(pitch, 1.0f, 0.0f, 0.0f);
         GL11.glRotatef(yaw, 0.0f, 1.0f, 0.0f);
         GL11.glTranslatef(position.x, position.y, position.z);
+
     }
 
 }

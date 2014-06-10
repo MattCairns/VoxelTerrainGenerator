@@ -1,6 +1,8 @@
 package com.matthewcairns.voxel;
 
 
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.TrueTypeFont;
 
@@ -15,11 +17,15 @@ public class HUD {
     TrueTypeFont font;
 
     public HUD(String typeFace, int fontSize) {
-        Font awtFont = new Font(typeFace, Font.BOLD, fontSize);
+        Font awtFont = new Font(typeFace, Font.PLAIN, fontSize);
         font = new TrueTypeFont(awtFont, false);
     }
 
     public void drawFont(int x, int y, String s) {
+
+
         font.drawString(x,y,s, Color.white);
+
+
     }
 }

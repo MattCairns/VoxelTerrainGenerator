@@ -8,12 +8,17 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.glu.GLU;
+import org.newdawn.slick.Color;
 
 public class Main {
     FPCameraController camera = new FPCameraController(0,0,0);
 
     float lastFrame = 0.0f;
+    int fps;
+    int savedFPS;
+    long lastFPS = getTime();
 
+    private HUD hud;
     private ChunkManager cm;
 
     public Main(){
@@ -24,9 +29,13 @@ public class Main {
             e.printStackTrace();
         }
 
+
+
         InitGL();
 
-        cm = new ChunkManager(10);
+        hud = new HUD("Helvetica", 12);
+
+        cm = new ChunkManager(7);
         cm.loadChunks();
 
         while(!Display.isCloseRequested()) {
@@ -34,7 +43,7 @@ public class Main {
             GL11.glLoadIdentity();
 
             Display.update();
-            Display.sync(60);
+            //Display.sync(60);
         }
 
         Display.destroy();
@@ -44,11 +53,12 @@ public class Main {
     private void update() {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
+        swap2D();
+        updateFPS();
+
+        swap3d();
         controlCamera();
-
-
         cm.renderChunks();
-
 
     }
 
@@ -78,6 +88,28 @@ public class Main {
 
         GL11.glMatrixMode(GL11.GL_MODELVIEW);
         GL11.glHint(GL11.GL_PERSPECTIVE_CORRECTION_HINT, GL11.GL_NICEST);
+    }
+
+    private void swap2D() {
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GL11.glDisable(GL11.GL_DEPTH_TEST);
+        GL11.glOrtho(0, 1280, 720, 0, 1, -1);
+        GL11.glEnable(GL11.GL_BLEND);
+        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    private void swap3d() {
+        GL11.glDisable(GL11.GL_BLEND);
+        GL11.glEnable(GL11.GL_DEPTH_TEST);
+        GL11.glMatrixMode(GL11.GL_PROJECTION);
+        GL11.glLoadIdentity();
+        GLU.gluPerspective(
+                67.0f, //FOV
+                1280.0f / 720.0f, //Aspect Ratio
+                0.1f, //zNear
+                10000.0f); //zFar
+        GL11.glMatrixMode(GL11.GL_MODELVIEW);
     }
 
     private void controlCamera() {
@@ -112,6 +144,18 @@ public class Main {
         }
 
         camera.lookThrough();
+    }
+
+    private void updateFPS() {
+        if(getTime() - lastFPS > 1000) {
+            hud.drawFont(100, 50, "FPS: " + fps);
+            savedFPS = fps;
+            System.out.println(fps);
+            fps = 0;
+            lastFPS += 1000;
+        }
+        hud.drawFont(100, 50, "FPS: " + savedFPS);
+        fps++;
     }
 
     private long getTime() {

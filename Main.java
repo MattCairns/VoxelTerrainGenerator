@@ -11,11 +11,10 @@ import org.lwjgl.util.glu.GLU;
 
 public class Main {
     FPCameraController camera = new FPCameraController(0,0,0);
-    Chunk chunk = new Chunk(0,0);
-    Chunk chunk0 = new Chunk(1, 0);
-    Chunk chunk1 = new Chunk(1, 1);
+
     float lastFrame = 0.0f;
 
+    private ChunkManager cm;
 
     public Main(){
         try {
@@ -25,11 +24,10 @@ public class Main {
             e.printStackTrace();
         }
 
-        chunk.createBlock();
-        chunk0.createBlock();
-        chunk1.createBlock();
-
         InitGL();
+
+        cm = new ChunkManager(10);
+        cm.loadChunks();
 
         while(!Display.isCloseRequested()) {
             update();
@@ -49,9 +47,7 @@ public class Main {
         controlCamera();
 
 
-        chunk.drawChunk();
-        chunk0.drawChunk();
-        chunk1.drawChunk();
+        cm.renderChunks();
 
 
     }

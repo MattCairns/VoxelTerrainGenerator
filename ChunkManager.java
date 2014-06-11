@@ -37,5 +37,9 @@ public class ChunkManager {
         }
     }
 
+    public int getNumberOfChunks() {
+        return renderChunk.length*renderChunk.length;
+    }
+
 
 }

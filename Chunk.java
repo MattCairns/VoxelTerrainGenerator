@@ -22,6 +22,7 @@ public class Chunk {
 
     private int VBOTextureHandle;
     private int VBOVertexHandle;
+    private FloatBuffer vertexPositionData;
 
     private int CHUNK_SIZE = 16;
 
@@ -36,6 +37,7 @@ public class Chunk {
     private boolean zNeg = false;
 
     private Block blocks[][][] = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+    private int activateBlocks = 0;
 
     public Chunk(float x, float z) {
         xOffset = x*32.0f;
@@ -44,7 +46,8 @@ public class Chunk {
         VBOTextureHandle = GL15.glGenBuffers();
         VBOVertexHandle = GL15.glGenBuffers();
 
-        createBlock();
+        createBlocks();
+        createChunk();
     }
 
     public void createBlocks() {
@@ -53,49 +56,49 @@ public class Chunk {
             for (int y = 0; y < CHUNK_SIZE; y++) {
                 for (int z = 0; z < CHUNK_SIZE; z++) {
                     blocks[x][y][z] = new Block();
-                    blocks[x][y][z].setActive(random.nextBoolean());
+                    //blocks[x][y][z].setActive(random.nextBoolean());
+                    if(blocks[x][y][z].getActive())
+                        activateBlocks += 1;
                 }
             }
         }
     }
+
+//    public void addChunkToBuffer() {
+//        for (int x = 0; x < CHUNK_SIZE; x++) {
+//            for (int y = 0; y < CHUNK_SIZE; y++) {
+//                for (int z = 0; z < CHUNK_SIZE; z++) {
+//                    glTranslatef(x * 2, y * 2, z * 2);
+//
+//                    if(x > 0)
+//                        xNeg = blocks[x-1][y][z].getActive();
+//                    if(y > 0)
+//                        yNeg = blocks[x][y-1][z].getActive();
+//                    if(z > 0)
+//                        zNeg = blocks[x][y][z-1].getActive();
+//                    if(x < CHUNK_SIZE-1)
+//                        xPos = blocks[x+1][y][z].getActive();
+//                    if(y < CHUNK_SIZE-1)
+//                        yPos = blocks[x][y+1][z].getActive();
+//                    if(z < CHUNK_SIZE-1)
+//                        zPos = blocks[x][y][z+1].getActive();
+//
+//                    if(blocks[x][y][z].getActive())
+//                        drawBlock();
+//                    glTranslatef(-x * 2, -y * 2, -z * 2);
+//
+//
+//
+//
+//                }
+//            }
+//        }
+//    }
+
+
+
 
     public void drawChunk() {
-        for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int y = 0; y < CHUNK_SIZE; y++) {
-                for (int z = 0; z < CHUNK_SIZE; z++) {
-                    glTranslatef(x * 2, y * 2, z * 2);
-
-                    if(x > 0)
-                        xNeg = blocks[x-1][y][z].getActive();
-                    if(y > 0)
-                        yNeg = blocks[x][y-1][z].getActive();
-                    if(z > 0)
-                        zNeg = blocks[x][y][z-1].getActive();
-                    if(x < CHUNK_SIZE-1)
-                        xPos = blocks[x+1][y][z].getActive();
-                    if(y < CHUNK_SIZE-1)
-                        yPos = blocks[x][y+1][z].getActive();
-                    if(z < CHUNK_SIZE-1)
-                        zPos = blocks[x][y][z+1].getActive();
-
-                    if(blocks[x][y][z].getActive())
-                        drawBlock();
-                    glTranslatef(-x * 2, -y * 2, -z * 2);
-
-
-
-
-                }
-            }
-        }
-    }
-
-    public void drawBlock() {
-        if(xNeg && yNeg && zNeg && xPos && yPos && zPos) {
-
-        }
-
-        else{
             GL11.glPushMatrix();
             GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);
             GL11.glVertexPointer(3, GL11.GL_FLOAT, 0, 0L);
@@ -106,49 +109,59 @@ public class Chunk {
 
             GL11.glDrawArrays(GL11.GL_QUADS, 0, 24);
             GL11.glPopMatrix();
-        }
-
     }
 
-    public void createBlock() {
-        FloatBuffer vertexPositionData = BufferUtils.createFloatBuffer(24*3);
-
+    public void putVertices(float tx, float ty, float tz) {
         float l_length = 1.0f;
         float l_height = 1.0f;
         float l_width = 1.0f;
-
         vertexPositionData.put(new float[]{
-                xOffset + l_length, l_height, zOffset + -l_width,
-                xOffset + -l_length, l_height, zOffset + -l_width,
-                xOffset + -l_length, l_height, zOffset + l_width,
-                xOffset + l_length, l_height, zOffset + l_width,
+                xOffset + l_length + tx, l_height + ty, zOffset + -l_width + tz,
+                xOffset + -l_length + tx, l_height + ty, zOffset + -l_width + tz,
+                xOffset + -l_length + tx, l_height + ty, zOffset + l_width + tz,
+                xOffset + l_length + tx, l_height + ty, zOffset + l_width + tz,
 
-                xOffset + l_length, -l_height, zOffset + l_width,
-                xOffset + -l_length, -l_height, zOffset + l_width,
-                xOffset + -l_length, -l_height, zOffset + -l_width,
-                xOffset + l_length, -l_height, zOffset + -l_width,
+                xOffset + l_length + tx, -l_height + ty, zOffset + l_width + tz,
+                xOffset + -l_length + tx, -l_height + ty, zOffset + l_width + tz,
+                xOffset + -l_length + tx, -l_height + ty, zOffset + -l_width + tz,
+                xOffset + l_length + tx, -l_height + ty, zOffset + -l_width + tz,
 
-                xOffset + l_length, l_height, zOffset + l_width,
-                xOffset + -l_length, l_height,zOffset +  l_width,
-                xOffset + -l_length, -l_height,zOffset +  l_width,
-                xOffset + l_length, -l_height, zOffset + l_width,
+                xOffset + l_length + tx, l_height + ty, zOffset + l_width + tz,
+                xOffset + -l_length + tx, l_height + ty,zOffset +  l_width + tz,
+                xOffset + -l_length + tx, -l_height + ty,zOffset +  l_width + tz,
+                xOffset + l_length + tx, -l_height + ty, zOffset + l_width + tz,
 
-                xOffset + l_length, -l_height, zOffset + -l_width,
-                xOffset + -l_length, -l_height,zOffset +  -l_width,
-                xOffset + -l_length, l_height, zOffset + -l_width,
-                xOffset + l_length, l_height, zOffset + -l_width,
+                xOffset + l_length + tx, -l_height + ty, zOffset + -l_width + tz,
+                xOffset + -l_length + tx, -l_height + ty,zOffset +  -l_width + tz,
+                xOffset + -l_length + tx, l_height + ty, zOffset + -l_width + tz,
+                xOffset + l_length + tx, l_height + ty, zOffset + -l_width + tz,
 
-                xOffset + -l_length, l_height, zOffset + l_width,
-                xOffset + -l_length, l_height, zOffset + -l_width,
-                xOffset + -l_length, -l_height, zOffset + -l_width,
-                xOffset + -l_length, -l_height,zOffset +  l_width,
+                xOffset + -l_length + tx, l_height + ty, zOffset + l_width + tz,
+                xOffset + -l_length + tx, l_height + ty, zOffset + -l_width + tz,
+                xOffset + -l_length + tx, -l_height + ty, zOffset + -l_width + tz,
+                xOffset + -l_length + tx, -l_height + ty,zOffset +  l_width + tz,
 
-                xOffset + l_length, l_height,zOffset +  -l_width,
-                xOffset + l_length, l_height, zOffset + l_width,
-                xOffset + l_length, -l_height, zOffset + l_width,
-                xOffset + l_length, -l_height, zOffset + -l_width
+                xOffset + l_length + tx, l_height + ty,zOffset +  -l_width + tz,
+                xOffset + l_length + tx, l_height + ty, zOffset + l_width + tz,
+                xOffset + l_length + tx, -l_height + ty, zOffset + l_width + tz,
+                xOffset + l_length + tx, -l_height + ty, zOffset + -l_width + tz
 
         });
+    }
+
+    public void createChunk() {
+        vertexPositionData = BufferUtils.createFloatBuffer((24*3)*activateBlocks);
+
+        Random random = new Random();
+        for (int x = 0; x < CHUNK_SIZE; x++) {
+            for (int y = 0; y < CHUNK_SIZE; y++) {
+                for (int z = 0; z < CHUNK_SIZE; z++) {
+                    if(blocks[x][y][z].getActive()) {
+                        putVertices(x*2.0f, y*2.0f, z*2.0f);
+                    }
+                }
+            }
+        }
 
         vertexPositionData.flip();
 
@@ -158,7 +171,6 @@ public class Chunk {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
 
-        Random random = new Random();
         float[] cubeColorArray = new float[24*3];
         for(int i=0; i<24*3; i++) {
             cubeColorArray[i] = random.nextFloat();
@@ -173,8 +185,6 @@ public class Chunk {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
         glEnd();
-
-        createBlocks();
     }
 
 //    public static Texture loadTexture(String texName) {

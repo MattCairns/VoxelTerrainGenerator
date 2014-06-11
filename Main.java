@@ -35,7 +35,7 @@ public class Main {
 
         hud = new HUD("Helvetica", 12);
 
-        cm = new ChunkManager(7);
+        cm = new ChunkManager(10);
         cm.loadChunks();
 
         while(!Display.isCloseRequested()) {
@@ -43,7 +43,7 @@ public class Main {
             GL11.glLoadIdentity();
 
             Display.update();
-            //Display.sync(60);
+            Display.sync(60);
         }
 
         Display.destroy();
@@ -55,6 +55,8 @@ public class Main {
 
         swap2D();
         updateFPS();
+        hud.drawFont(100, 25, "chunk_count: " + cm.getNumberOfChunks());
+        hud.drawFont(100, 10, "block_count: " + cm.getNumberOfChunks()*(16*16));
 
         swap3d();
         controlCamera();
@@ -148,13 +150,12 @@ public class Main {
 
     private void updateFPS() {
         if(getTime() - lastFPS > 1000) {
-            hud.drawFont(100, 50, "FPS: " + fps);
+            hud.drawFont(100, 50, "fps: " + fps);
             savedFPS = fps;
-            System.out.println(fps);
             fps = 0;
             lastFPS += 1000;
         }
-        hud.drawFont(100, 50, "FPS: " + savedFPS);
+        hud.drawFont(100, 50, "fps: " + savedFPS);
         fps++;
     }
 

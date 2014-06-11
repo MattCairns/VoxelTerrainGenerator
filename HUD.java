@@ -1,8 +1,5 @@
 package com.matthewcairns.voxel;
 
-
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.TrueTypeFont;
 

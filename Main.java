@@ -43,7 +43,7 @@ public class Main {
             GL11.glLoadIdentity();
 
             Display.update();
-            Display.sync(60);
+            //Display.sync(60);
         }
 
         Display.destroy();

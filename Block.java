@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11;
  * All rights reserved.
  */
 public class Block {
-    private boolean IsActive = true;
+    private boolean IsActive = false;
 
     public boolean getActive() {
         return IsActive;

@@ -35,7 +35,7 @@ public class Main {
 
         hud = new HUD("Helvetica", 12);
 
-        cm = new ChunkManager(10);
+        cm = new ChunkManager(20);
         cm.loadChunks();
 
         while(!Display.isCloseRequested()) {

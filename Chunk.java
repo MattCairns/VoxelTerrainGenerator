@@ -1,5 +1,7 @@
 package com.matthewcairns.voxel;
 
+import com.matthewcairns.voxel.Noise.SimplexNoise;
+import com.matthewcairns.voxel.Noise.SimplexNoiseOctave;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -24,6 +26,8 @@ public class Chunk {
     private int VBOVertexHandle;
     private FloatBuffer vertexPositionData;
 
+    private SimplexNoise simplexNoise;
+
     private int CHUNK_SIZE = 16;
 
     private float xOffset = 0;
@@ -39,12 +43,14 @@ public class Chunk {
     private Block blocks[][][] = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
     private int activateBlocks = 0;
 
-    public Chunk(float x, float z) {
+    public Chunk(float x, float z, SimplexNoise simplexNoise) {
         xOffset = x*(CHUNK_SIZE*2);
         zOffset = z*(CHUNK_SIZE*2);
 
         VBOTextureHandle = GL15.glGenBuffers();
         VBOVertexHandle = GL15.glGenBuffers();
+
+        this.simplexNoise = simplexNoise;
 
         createBlocks();
         createChunk();
@@ -53,12 +59,24 @@ public class Chunk {
     public void createBlocks() {
         Random random = new Random();
         for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int y = 0; y < CHUNK_SIZE; y++) {
-                for (int z = 0; z < CHUNK_SIZE; z++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                for (int y = 0; y < CHUNK_SIZE; y++) {
                     blocks[x][y][z] = new Block();
-                    blocks[x][y][z].setActive(random.nextBoolean());
-                    if(blocks[x][y][z].getActive())
-                        activateBlocks += 1;
+                }
+            }
+        }
+
+        for (int x = 0; x < CHUNK_SIZE; x++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                int height = (int)(1000*(simplexNoise.getNoise(x+xOffset/2,z+zOffset/2)));
+                System.out.println(height);
+                if(height <= 0)
+                    height = 1;
+                if(height >= 16)
+                    height = 16;
+                for (int y = 0; y < height; y++) {
+                    blocks[x][y][z].setActive(true);
+                    activateBlocks += 1;
                 }
             }
         }
@@ -121,10 +139,10 @@ public class Chunk {
 
         Random random = new Random();
         for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int y = 0; y < CHUNK_SIZE; y++) {
-                for (int z = 0; z < CHUNK_SIZE; z++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                for (int y = 0; y < CHUNK_SIZE; y++) {
                     if(blocks[x][y][z].getActive()) {
-                        putVertices(x*2, y*2, z*2);
+                        putVertices(x*2, -y*2, z*2);
                     }
                 }
             }

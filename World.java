@@ -12,11 +12,10 @@ import org.lwjgl.util.glu.GLU;
  * All rights reserved.
  */
 public class World {
-    FPCameraController camera = new FPCameraController(0,0,0);
+    private FPCameraController camera = new FPCameraController(10,50,10);
 
     float lastFrame = 0.0f;
-    int fps;
-    int savedFPS;
+    int fps, savedFPS;
     long lastFPS = getTime();
 
     private HUD hud;
@@ -26,7 +25,7 @@ public class World {
     public World() {
         hud = new HUD("Helvetica", 12);
 
-        cm = new ChunkManager(20);
+        cm = new ChunkManager();
         cm.loadChunks();
     }
 
@@ -35,12 +34,13 @@ public class World {
 
         swap2D();
         updateFPS();
-        hud.drawFont(100, 25, "chunk_count: " + cm.getNumberOfChunks());
-        hud.drawFont(100, 10, "block_count: " + cm.getNumberOfChunks()*(16*16));
+//        hud.drawFont(100, 25, "chunk_count: " + cm.getNumberOfChunks());
+//        hud.drawFont(100, 10, "block_count: " + cm.getNumberOfChunks()*(16*16));
 
         swap3d();
         controlCamera();
-        cm.renderChunks();
+        cm.update(camera.getPosition());
+//        cm.renderChunks();
     }
 
     private void swap2D() {
@@ -72,9 +72,7 @@ public class World {
         float dy = Mouse.getDY();
 
         float mouseSpeed = 0.5f;
-        float movementSpeed = 0.05f;
-
-
+        float movementSpeed = 0.1f;
 
         camera.yaw(dx*mouseSpeed);
         camera.pitch(dy*mouseSpeed);

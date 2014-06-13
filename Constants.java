@@ -9,5 +9,6 @@ public class Constants {
     public static int SCREEN_HEIGHT = 720;
 
     public static int CHUNK_SIZE = 16;
+    public static int VIEW_DISTANCE = 15;
 
 }

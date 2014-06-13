@@ -33,6 +33,8 @@ public class Chunk {
     private boolean yNeg = false;
     private boolean zNeg = false;
 
+    private boolean chunkCreated = false, chunkLoaded = false;
+
     private Block blocks[][][] = new Block[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     private int activateBlocks = 0;
 
@@ -45,8 +47,8 @@ public class Chunk {
 
         this.simplexNoise = simplexNoise;
 
-        createBlocks();
-        createChunk();
+
+        System.out.println("Chunk created at " + x + " " + z);
     }
 
     public void createBlocks() {
@@ -62,7 +64,6 @@ public class Chunk {
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
                 int height = (int)(1000*(simplexNoise.getNoise(x+xOffset/2,z+zOffset/2)));
-                System.out.println(height);
                 if(height <= 0)
                     height = 1;
                 if(height >= 16)
@@ -168,7 +169,23 @@ public class Chunk {
         glEnd();
     }
 
-//    public static Texture loadTexture(String texName) {
+    public boolean isChunkCreated() {
+        return chunkCreated;
+    }
+
+    public void setChunkCreated(boolean chunkCreated) {
+        this.chunkCreated = chunkCreated;
+    }
+
+    public boolean isChunkLoaded() {
+        return chunkLoaded;
+    }
+
+    public void setChunkLoaded(boolean chunkLoaded) {
+        this.chunkLoaded = chunkLoaded;
+    }
+
+    //    public static Texture loadTexture(String texName) {
 //        try {
 //            return TextureLoader.getTexture("png", new FileInputStream(new File("assets/" + texName + ".png")));
 //        } catch (IOException e) {

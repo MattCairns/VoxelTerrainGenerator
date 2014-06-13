@@ -26,12 +26,7 @@ public class Chunk {
     private float xOffset = 0;
     private float zOffset = 0;
 
-    private boolean xPos = false;
-    private boolean yPos = false;
-    private boolean zPos = false;
-    private boolean xNeg = false;
-    private boolean yNeg = false;
-    private boolean zNeg = false;
+    private boolean[] faceHidden = new boolean[6];
 
     private boolean chunkCreated = false, chunkLoaded = false;
 
@@ -39,20 +34,16 @@ public class Chunk {
     private int activateBlocks = 0;
 
     public Chunk(float x, float z, SimplexNoise simplexNoise) {
-        xOffset = x*(Constants.CHUNK_SIZE*2);
-        zOffset = z*(Constants.CHUNK_SIZE*2);
-
-        VBOTextureHandle = GL15.glGenBuffers();
-        VBOVertexHandle = GL15.glGenBuffers();
+        xOffset = (x*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
+        zOffset = (z*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
 
         this.simplexNoise = simplexNoise;
-
-
-        System.out.println("Chunk created at " + x + " " + z);
     }
 
     public void createBlocks() {
-        Random random = new Random();
+        VBOTextureHandle = GL15.glGenBuffers();
+        VBOVertexHandle = GL15.glGenBuffers();
+
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
                 for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
@@ -63,7 +54,7 @@ public class Chunk {
 
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
-                int height = (int)(1000*(simplexNoise.getNoise(x+xOffset/2,z+zOffset/2)));
+                int height = (int)(1000*(simplexNoise.getNoise((x+xOffset/2)*Constants.BLOCK_SIZE,(z+zOffset/2)*Constants.BLOCK_SIZE)));
                 if(height <= 0)
                     height = 1;
                 if(height >= 16)
@@ -91,9 +82,9 @@ public class Chunk {
     }
 
     public void putVertices(float tx, float ty, float tz) {
-        float l_length = 1.0f;
-        float l_height = 1.0f;
-        float l_width = 1.0f;
+        float l_length = Constants.BLOCK_SIZE;
+        float l_height = Constants.BLOCK_SIZE;
+        float l_width = Constants.BLOCK_SIZE;
         vertexPositionData.put(new float[]{
                 xOffset + l_length + tx, l_height + ty, zOffset + -l_width + tz,
                 xOffset + -l_length + tx, l_height + ty, zOffset + -l_width + tz,
@@ -135,8 +126,16 @@ public class Chunk {
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
                 for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
+                    if(!blocks[x][y][z].getActive()) {
+                        continue;
+                    }
+
+                    if(occlusionCulling(x, y, z)) {
+                        continue;
+                    }
+
                     if(blocks[x][y][z].getActive()) {
-                        putVertices(x*2, -y*2, z*2);
+                        putVertices((x*2)*Constants.BLOCK_SIZE, (-y*2)*Constants.BLOCK_SIZE, (z*2)*Constants.BLOCK_SIZE);
                     }
                 }
             }
@@ -167,6 +166,22 @@ public class Chunk {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
         glEnd();
+    }
+
+    public boolean occlusionCulling(int x, int y, int z) {
+        faceHidden[0] = x > 0 && blocks[x - 1][y][z].getActive();
+        faceHidden[1] = x < Constants.CHUNK_SIZE - 1 && blocks[x + 1][y][z].getActive();
+        faceHidden[2] = y > 0 && blocks[x][y - 1][z].getActive();
+        faceHidden[3] = y < Constants.CHUNK_SIZE - 1 && blocks[x][y + 1][z].getActive();
+        faceHidden[4] = z > 0 && blocks[x][y][z - 1].getActive();
+        faceHidden[5] = z < Constants.CHUNK_SIZE - 1 && blocks[x][y][z + 1].getActive();
+
+        return faceHidden[0] && faceHidden[1]  && faceHidden[2] && faceHidden[3] && faceHidden[4] && faceHidden[5];
+    }
+
+    public void dispose() {
+        GL15.glDeleteBuffers(VBOTextureHandle);
+        GL15.glDeleteBuffers(VBOVertexHandle);
     }
 
     public boolean isChunkCreated() {

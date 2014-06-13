@@ -1,16 +1,11 @@
-package com.matthewcairns.voxel;
+package com.matthewcairns.voxel.Chunks;
 
+import com.matthewcairns.voxel.Constants;
 import com.matthewcairns.voxel.Noise.SimplexNoise;
-import com.matthewcairns.voxel.Noise.SimplexNoiseOctave;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
-import org.newdawn.slick.opengl.Texture;
-import org.newdawn.slick.opengl.TextureLoader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.Random;
 
@@ -28,8 +23,6 @@ public class Chunk {
 
     private SimplexNoise simplexNoise;
 
-    private int CHUNK_SIZE = 16;
-
     private float xOffset = 0;
     private float zOffset = 0;
 
@@ -40,12 +33,12 @@ public class Chunk {
     private boolean yNeg = false;
     private boolean zNeg = false;
 
-    private Block blocks[][][] = new Block[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+    private Block blocks[][][] = new Block[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     private int activateBlocks = 0;
 
     public Chunk(float x, float z, SimplexNoise simplexNoise) {
-        xOffset = x*(CHUNK_SIZE*2);
-        zOffset = z*(CHUNK_SIZE*2);
+        xOffset = x*(Constants.CHUNK_SIZE*2);
+        zOffset = z*(Constants.CHUNK_SIZE*2);
 
         VBOTextureHandle = GL15.glGenBuffers();
         VBOVertexHandle = GL15.glGenBuffers();
@@ -58,16 +51,16 @@ public class Chunk {
 
     public void createBlocks() {
         Random random = new Random();
-        for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int z = 0; z < CHUNK_SIZE; z++) {
-                for (int y = 0; y < CHUNK_SIZE; y++) {
+        for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
+            for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
+                for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
                     blocks[x][y][z] = new Block();
                 }
             }
         }
 
-        for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int z = 0; z < CHUNK_SIZE; z++) {
+        for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
+            for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
                 int height = (int)(1000*(simplexNoise.getNoise(x+xOffset/2,z+zOffset/2)));
                 System.out.println(height);
                 if(height <= 0)
@@ -138,9 +131,9 @@ public class Chunk {
         vertexPositionData = BufferUtils.createFloatBuffer(((24*3)*activateBlocks));
 
         Random random = new Random();
-        for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int z = 0; z < CHUNK_SIZE; z++) {
-                for (int y = 0; y < CHUNK_SIZE; y++) {
+        for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
+            for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
+                for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
                     if(blocks[x][y][z].getActive()) {
                         putVertices(x*2, -y*2, z*2);
                     }

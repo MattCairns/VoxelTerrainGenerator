@@ -1,4 +1,4 @@
-package com.matthewcairns.voxel;
+package com.matthewcairns.voxel.Chunks;
 
 import org.lwjgl.opengl.GL11;
 

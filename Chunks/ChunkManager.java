@@ -1,11 +1,6 @@
-package com.matthewcairns.voxel;
+package com.matthewcairns.voxel.Chunks;
 
 import com.matthewcairns.voxel.Noise.SimplexNoise;
-import com.matthewcairns.voxel.Noise.SimplexNoiseOctave;
-import org.lwjgl.util.vector.Vector3f;
-import sun.java2d.pipe.SpanShapeRenderer;
-
-import java.util.ArrayList;
 
 /**
 * Created by Matthew Cairns on 08/06/2014.

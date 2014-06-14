@@ -5,7 +5,12 @@ import com.matthewcairns.voxel.Noise.SimplexNoise;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
+import org.newdawn.slick.opengl.Texture;
+import org.newdawn.slick.opengl.TextureLoader;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.util.Random;
 
@@ -18,8 +23,9 @@ import static org.lwjgl.opengl.GL11.*;
 public class Chunk {
 
     private int VBOTextureHandle;
+    private Texture dirtTexture;
+
     private int VBOVertexHandle;
-    private FloatBuffer vertexPositionData;
 
     private SimplexNoise simplexNoise;
 
@@ -60,28 +66,38 @@ public class Chunk {
                 if(height >= 16)
                     height = 16;
                 for (int y = 0; y < height; y++) {
+
+
                     blocks[x][y][z].setActive(true);
                     activateBlocks += 1;
                 }
             }
         }
+
+        dirtTexture = loadTexture("dirt");
     }
 
 
     public void drawChunk() {
-            GL11.glPushMatrix();
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);
-            GL11.glVertexPointer(3, GL11.GL_FLOAT, 0, 0L);
+        GL11.glPushMatrix();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);
+        GL11.glVertexPointer(3, GL11.GL_FLOAT, 0, 0L);
 
-            GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOTextureHandle);
-            GL11.glColorPointer(3, GL11.GL_FLOAT, 0, 0L);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOTextureHandle);
+        GL11.glColorPointer(3, GL11.GL_FLOAT, 0, 0L);
 
+//        GL11.glEnableClientState(GL_VERTEX_ARRAY);
+//        GL11.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-            GL11.glDrawArrays(GL11.GL_QUADS, 0, ((24)*activateBlocks));
-            GL11.glPopMatrix();
+        GL11.glDrawArrays(GL11.GL_QUADS, 0, ((24)*activateBlocks));
+
+//        GL11.glDisableClientState(GL_VERTEX_ARRAY);
+//        GL11.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        GL11.glPopMatrix();
     }
 
-    public void putVertices(float tx, float ty, float tz) {
+    public void putVertices(float tx, float ty, float tz, FloatBuffer vertexPositionData) {
         float l_length = Constants.BLOCK_SIZE;
         float l_height = Constants.BLOCK_SIZE;
         float l_width = Constants.BLOCK_SIZE;
@@ -120,52 +136,51 @@ public class Chunk {
     }
 
     public void createChunk() {
-        vertexPositionData = BufferUtils.createFloatBuffer(((24*3)*activateBlocks));
-
+        FloatBuffer vertexPositionData = BufferUtils.createFloatBuffer(((12*6)*activateBlocks));
+        FloatBuffer vertexTextureData = BufferUtils.createFloatBuffer(((12*6)*activateBlocks));
         Random random = new Random();
-        for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
-            for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
-                for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                    if(!blocks[x][y][z].getActive()) {
-                        continue;
-                    }
 
-                    if(occlusionCulling(x, y, z)) {
-                        continue;
-                    }
-
-                    if(blocks[x][y][z].getActive()) {
-                        putVertices((x*2)*Constants.BLOCK_SIZE, (-y*2)*Constants.BLOCK_SIZE, (z*2)*Constants.BLOCK_SIZE);
-                    }
-                }
-            }
-        }
-
-        vertexPositionData.flip();
-
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexPositionData,
-                GL15.GL_STATIC_DRAW);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-
+        //dirtTexture.bind();
 
         float[] cubeColorArray = new float[24*3];
         for(int i=0; i<24*3; i++) {
             cubeColorArray[i] = random.nextFloat();
         }
 
-        FloatBuffer vertexTextureData = BufferUtils.createFloatBuffer(((24*3)*activateBlocks));
-        for(int i=0; i<activateBlocks; i++) {
-            vertexTextureData.put(cubeColorArray);
-        }
-        vertexTextureData.flip();
+        for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
+            for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
+                for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
 
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOTextureHandle);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexTextureData,
-                GL15.GL_STATIC_DRAW);
+                    if(occlusionCulling(x, y, z)) {
+                        continue;
+                    }
+
+                    if(blocks[x][y][z].getActive()) {
+                        putVertices((x*2)*Constants.BLOCK_SIZE, (-y*2)*Constants.BLOCK_SIZE, (z*2)*Constants.BLOCK_SIZE, vertexPositionData);
+
+//                        vertexTextureData.put(new float[]{
+//                                0.0f, 0.0f,
+//                                1.0f, 0.0f,
+//                                1.0f, 1.0f,
+//                                0.0f, 1.0f
+//                        });
+
+                        vertexTextureData.put(cubeColorArray);
+                    }
+                }
+            }
+        }
+
+        vertexPositionData.flip();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexPositionData, GL15.GL_STATIC_DRAW);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
-        glEnd();
+        vertexTextureData.flip();
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOTextureHandle);
+        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexTextureData, GL15.GL_STATIC_DRAW);
+        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+
     }
 
     public boolean occlusionCulling(int x, int y, int z) {
@@ -200,13 +215,13 @@ public class Chunk {
         this.chunkLoaded = chunkLoaded;
     }
 
-    //    public static Texture loadTexture(String texName) {
-//        try {
-//            return TextureLoader.getTexture("png", new FileInputStream(new File("assets/" + texName + ".png")));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
-//    }
+    public static Texture loadTexture(String texName) {
+    try {
+        return TextureLoader.getTexture("png", new FileInputStream(new File("assets/" + texName + ".png")));
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 
 }

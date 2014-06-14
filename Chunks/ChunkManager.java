@@ -14,7 +14,7 @@ import java.util.Vector;
 public class ChunkManager {
     private ArrayList<Chunk> chunks;
 
-    private int CHUNKS_LOADED_PER_FRAME = 1;
+    private int CHUNKS_LOADED_PER_FRAME = 6;
     private int renderedChunks = 0, numChunks = 0;
     private boolean chunksInitiated = false;
 

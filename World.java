@@ -12,7 +12,7 @@ import org.lwjgl.util.glu.GLU;
  * All rights reserved.
  */
 public class World {
-    private FPCameraController camera = new FPCameraController(100,200,100);
+    private FPCameraController camera = new FPCameraController(0,0,0);
 
     float lastFrame = 0.0f;
     int fps, savedFPS;
@@ -71,26 +71,26 @@ public class World {
         float dy = Mouse.getDY();
 
         float mouseSpeed = 0.5f;
-        float movementSpeed = 0.5f;
+        float movementSpeed = 10.0f;
 
         camera.yaw(dx*mouseSpeed);
         camera.pitch(dy*mouseSpeed);
 
         if (Keyboard.isKeyDown(Keyboard.KEY_W))//move forward
         {
-            camera.walkForward(movementSpeed*dt);
+            camera.walkForward(movementSpeed);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_S))//move backwards
         {
-            camera.walkBackwards(movementSpeed*dt);
+            camera.walkBackwards(movementSpeed);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_A))//strafe left
         {
-            camera.strafeLeft(movementSpeed*dt);
+            camera.strafeLeft(movementSpeed);
         }
         if (Keyboard.isKeyDown(Keyboard.KEY_D))//strafe right
         {
-            camera.strafeRight(movementSpeed*dt);
+            camera.strafeRight(movementSpeed);
         }
 
         camera.lookThrough();

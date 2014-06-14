@@ -81,19 +81,22 @@ public class Chunk {
 
 
     public void drawChunk() {
-        GL11.glPushMatrix();
-
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);
         GL11.glVertexPointer(3, GL11.GL_FLOAT, 0, 0L);
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOTextureHandle);
         GL11.glColorPointer(3, GL11.GL_FLOAT, 0, 0L);
-        //GL11.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        //Enable Vertex Buffer Object rendering (VBO)
+        GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
+        GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
+
 
         GL11.glDrawArrays(GL11.GL_QUADS, 0, ((24)*activateBlocks));
 
-        GL11.glPopMatrix();
-
+        //Enable Vertex Buffer Object rendering (VBO)
+        GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
+        GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
     }
 
     public void putVertices(float tx, float ty, float tz, FloatBuffer vertexPositionData) {
@@ -156,38 +159,6 @@ public class Chunk {
 
                     if(blocks[x][y][z].getActive()) {
                         putVertices((x*2)*Constants.BLOCK_SIZE, (-y*2)*Constants.BLOCK_SIZE, (z*2)*Constants.BLOCK_SIZE, vertexPositionData);
-
-//                        vertexTextureData.put(new float[]{
-//                                0.0f, 0.0f,
-//                                1.0f, 0.0f,
-//                                1.0f, 1.0f,
-//                                0.0f, 1.0f,
-//
-//                                0.0f, 0.0f,
-//                                1.0f, 0.0f,
-//                                1.0f, 1.0f,
-//                                0.0f, 1.0f,
-//
-//                                0.0f, 0.0f,
-//                                1.0f, 0.0f,
-//                                1.0f, 1.0f,
-//                                0.0f, 1.0f,
-//
-//                                0.0f, 0.0f,
-//                                1.0f, 0.0f,
-//                                1.0f, 1.0f,
-//                                0.0f, 1.0f,
-//
-//                                0.0f, 0.0f,
-//                                1.0f, 0.0f,
-//                                1.0f, 1.0f,
-//                                0.0f, 1.0f,
-//
-//                                0.0f, 0.0f,
-//                                1.0f, 0.0f,
-//                                1.0f, 1.0f,
-//                                0.0f, 1.0f,
-//                        });
 
                         vertexTextureData.put(cubeColorArray);
                     }

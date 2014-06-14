@@ -5,8 +5,8 @@ package com.matthewcairns.voxel;
  * All rights reserved.
  */
 public class Constants {
-    public static int SCREEN_WIDTH = 1280;
-    public static int SCREEN_HEIGHT = 720;
+    public static float SCREEN_WIDTH = 1280.0f;
+    public static float SCREEN_HEIGHT = 720.0f;
 
     public static float BLOCK_SIZE = 1.0f;
 

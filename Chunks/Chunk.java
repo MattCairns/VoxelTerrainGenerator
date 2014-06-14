@@ -39,9 +39,9 @@ public class Chunk {
     private Block blocks[][][] = new Block[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     private int activateBlocks = 0;
 
-    public Chunk(float x, float z, SimplexNoise simplexNoise) {
-        xOffset = (x*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
-        zOffset = (z*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
+    public Chunk(float ox, float oz, float x, float z, SimplexNoise simplexNoise) {
+        xOffset = ox + (x*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
+        zOffset = ox + (z*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
 
         this.simplexNoise = simplexNoise;
     }
@@ -63,8 +63,8 @@ public class Chunk {
                 int height = (int)(1000*(simplexNoise.getNoise((x+xOffset/2)*Constants.BLOCK_SIZE,(z+zOffset/2)*Constants.BLOCK_SIZE)));
                 if(height <= 0)
                     height = 1;
-                if(height >= 16)
-                    height = 16;
+                if(height >= Constants.CHUNK_SIZE)
+                    height = Constants.CHUNK_SIZE;
                 for (int y = 0; y < height; y++) {
 
 
@@ -74,27 +74,26 @@ public class Chunk {
             }
         }
 
-        dirtTexture = loadTexture("dirt");
+//        dirtTexture = loadTexture("StoneTile");
+//        System.out.println(dirtTexture.getTextureID());
+//        System.out.println(dirtTexture.getHeight());
     }
 
 
     public void drawChunk() {
         GL11.glPushMatrix();
+
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);
         GL11.glVertexPointer(3, GL11.GL_FLOAT, 0, 0L);
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOTextureHandle);
         GL11.glColorPointer(3, GL11.GL_FLOAT, 0, 0L);
-
-//        GL11.glEnableClientState(GL_VERTEX_ARRAY);
-//        GL11.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+        //GL11.glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
         GL11.glDrawArrays(GL11.GL_QUADS, 0, ((24)*activateBlocks));
 
-//        GL11.glDisableClientState(GL_VERTEX_ARRAY);
-//        GL11.glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
         GL11.glPopMatrix();
+
     }
 
     public void putVertices(float tx, float ty, float tz, FloatBuffer vertexPositionData) {
@@ -162,7 +161,32 @@ public class Chunk {
 //                                0.0f, 0.0f,
 //                                1.0f, 0.0f,
 //                                1.0f, 1.0f,
-//                                0.0f, 1.0f
+//                                0.0f, 1.0f,
+//
+//                                0.0f, 0.0f,
+//                                1.0f, 0.0f,
+//                                1.0f, 1.0f,
+//                                0.0f, 1.0f,
+//
+//                                0.0f, 0.0f,
+//                                1.0f, 0.0f,
+//                                1.0f, 1.0f,
+//                                0.0f, 1.0f,
+//
+//                                0.0f, 0.0f,
+//                                1.0f, 0.0f,
+//                                1.0f, 1.0f,
+//                                0.0f, 1.0f,
+//
+//                                0.0f, 0.0f,
+//                                1.0f, 0.0f,
+//                                1.0f, 1.0f,
+//                                0.0f, 1.0f,
+//
+//                                0.0f, 0.0f,
+//                                1.0f, 0.0f,
+//                                1.0f, 1.0f,
+//                                0.0f, 1.0f,
 //                        });
 
                         vertexTextureData.put(cubeColorArray);
@@ -180,7 +204,6 @@ public class Chunk {
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOTextureHandle);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexTextureData, GL15.GL_STATIC_DRAW);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
-
     }
 
     public boolean occlusionCulling(int x, int y, int z) {
@@ -217,7 +240,7 @@ public class Chunk {
 
     public static Texture loadTexture(String texName) {
     try {
-        return TextureLoader.getTexture("png", new FileInputStream(new File("assets/" + texName + ".png")));
+        return TextureLoader.getTexture("tga", new FileInputStream(new File("assets/" + texName + ".tga")));
     } catch (IOException e) {
         e.printStackTrace();
     }

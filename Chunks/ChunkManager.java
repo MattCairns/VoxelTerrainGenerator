@@ -37,10 +37,10 @@ public class ChunkManager {
     }
 
     public void initChunks() {
-        //chunks.add(new Chunk(playerPosition.getX(), playerPosition.getZ(), simplexNoise));
+        chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), 0, 0, simplexNoise));
         for (int x = 0; x < Constants.VIEW_DISTANCE; x++) {
             for (int z = 0; z < Constants.VIEW_DISTANCE; z++) {
-                chunks.add(new Chunk(x - Constants.VIEW_DISTANCE, z + (Constants.VIEW_DISTANCE -1), simplexNoise));
+                chunks.add(new Chunk(playerPosition.getX(), playerPosition.getZ(), x, z, simplexNoise));
             }
         }
         chunksInitiated=true;

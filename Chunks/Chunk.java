@@ -74,9 +74,9 @@ public class Chunk {
             }
         }
 
-//        dirtTexture = loadTexture("StoneTile");
-//        System.out.println(dirtTexture.getTextureID());
-//        System.out.println(dirtTexture.getHeight());
+        dirtTexture = loadTexture("dirt");
+        System.out.println(dirtTexture.getTextureID());
+        System.out.println(dirtTexture.getHeight());
     }
 
 
@@ -85,18 +85,17 @@ public class Chunk {
         GL11.glVertexPointer(3, GL11.GL_FLOAT, 0, 0L);
 
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOTextureHandle);
-        GL11.glColorPointer(3, GL11.GL_FLOAT, 0, 0L);
+        GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 0, 0L);
 
         //Enable Vertex Buffer Object rendering (VBO)
         GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-        GL11.glEnableClientState(GL11.GL_COLOR_ARRAY);
-
+        GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
 
         GL11.glDrawArrays(GL11.GL_QUADS, 0, ((24)*activateBlocks));
 
-        //Enable Vertex Buffer Object rendering (VBO)
+        //Disable Vertex Buffer Object rendering (VBO)
         GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-        GL11.glDisableClientState(GL11.GL_COLOR_ARRAY);
+        GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
     }
 
     public void putVertices(float tx, float ty, float tz, FloatBuffer vertexPositionData) {
@@ -139,15 +138,15 @@ public class Chunk {
 
     public void createChunk() {
         FloatBuffer vertexPositionData = BufferUtils.createFloatBuffer(((12*6)*activateBlocks));
-        FloatBuffer vertexTextureData = BufferUtils.createFloatBuffer(((12*6)*activateBlocks));
+        FloatBuffer vertexTextureData = BufferUtils.createFloatBuffer(((8*6)*activateBlocks));
         Random random = new Random();
 
-        //dirtTexture.bind();
+        dirtTexture.bind();
 
-        float[] cubeColorArray = new float[24*3];
-        for(int i=0; i<24*3; i++) {
-            cubeColorArray[i] = random.nextFloat();
-        }
+//        float[] cubeColorArray = new float[24*3];
+//        for(int i=0; i<24*3; i++) {
+//            cubeColorArray[i] = random.nextFloat();
+//        }
 
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
@@ -160,7 +159,39 @@ public class Chunk {
                     if(blocks[x][y][z].getActive()) {
                         putVertices((x*2)*Constants.BLOCK_SIZE, (-y*2)*Constants.BLOCK_SIZE, (z*2)*Constants.BLOCK_SIZE, vertexPositionData);
 
-                        vertexTextureData.put(cubeColorArray);
+                        vertexTextureData.put(new float[]{
+                                0.0f, 0.0f,
+                                0.0f, 1.0f,
+                                1.0f, 1.0f,
+                                1.0f, 0.0f,
+
+                                0.0f, 0.0f,
+                                0.0f, 1.0f,
+                                1.0f, 1.0f,
+                                1.0f, 0.0f,
+
+                                0.0f, 0.0f,
+                                0.0f, 1.0f,
+                                1.0f, 1.0f,
+                                1.0f, 0.0f,
+
+                                0.0f, 0.0f,
+                                0.0f, 1.0f,
+                                1.0f, 1.0f,
+                                1.0f, 0.0f,
+
+                                0.0f, 0.0f,
+                                0.0f, 1.0f,
+                                1.0f, 1.0f,
+                                1.0f, 0.0f,
+
+                                0.0f, 0.0f,
+                                0.0f, 1.0f,
+                                1.0f, 1.0f,
+                                1.0f, 0.0f
+                        });
+
+                        //vertexTextureData.put(cubeColorArray);
                     }
                 }
             }
@@ -211,7 +242,7 @@ public class Chunk {
 
     public static Texture loadTexture(String texName) {
     try {
-        return TextureLoader.getTexture("tga", new FileInputStream(new File("assets/" + texName + ".tga")));
+        return TextureLoader.getTexture("png", new FileInputStream(new File("assets/" + texName + ".png")));
     } catch (IOException e) {
         e.printStackTrace();
     }

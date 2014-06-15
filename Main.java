@@ -30,7 +30,7 @@ public class Main {
 
             GL11.glLoadIdentity();
             Display.update();
-            //Display.sync(30);
+            Display.sync(50);
         }
         Display.destroy();
     }

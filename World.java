@@ -31,7 +31,7 @@ public class World {
 
     public void update() {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-//
+
 //        swap2D();
 //        updateFPS();
 //        hud.drawFont(100, 25, "chunk_count: " + cm.getNumberOfChunks());
@@ -41,7 +41,7 @@ public class World {
         controlCamera();
         cm.update(camera.getPosition());
     }
-
+//
 //    private void swap2D() {
 //        GL11.glMatrixMode(GL11.GL_PROJECTION);
 //        GL11.glLoadIdentity();

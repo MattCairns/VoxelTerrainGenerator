@@ -23,6 +23,7 @@ import static org.lwjgl.opengl.GL11.*;
 public class Chunk {
 
     private int VBOTextureHandle;
+
     private Texture dirtTexture;
 
     private int VBOVertexHandle;
@@ -66,8 +67,6 @@ public class Chunk {
                 if(height >= Constants.CHUNK_SIZE)
                     height = Constants.CHUNK_SIZE;
                 for (int y = 0; y < height; y++) {
-
-
                     blocks[x][y][z].setActive(true);
                     activateBlocks += 1;
                 }
@@ -139,14 +138,8 @@ public class Chunk {
     public void createChunk() {
         FloatBuffer vertexPositionData = BufferUtils.createFloatBuffer(((12*6)*activateBlocks));
         FloatBuffer vertexTextureData = BufferUtils.createFloatBuffer(((8*6)*activateBlocks));
-        Random random = new Random();
 
         dirtTexture.bind();
-
-//        float[] cubeColorArray = new float[24*3];
-//        for(int i=0; i<24*3; i++) {
-//            cubeColorArray[i] = random.nextFloat();
-//        }
 
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
@@ -190,8 +183,6 @@ public class Chunk {
                                 1.0f, 1.0f,
                                 1.0f, 0.0f
                         });
-
-                        //vertexTextureData.put(cubeColorArray);
                     }
                 }
             }

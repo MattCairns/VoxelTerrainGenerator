@@ -47,6 +47,17 @@ public class Main {
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
 
+        float lightAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        float lightDiffuse[] = { 0.5f, 0.5f, 0.5f, 1.0f };
+        float lightPosition[] = { 0.0f, 1.0f, 1.0f, 0.0f };
+
+        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, asFloatBuffer(lightAmbient));              // Setup The Ambient Light
+        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, asFloatBuffer(lightDiffuse));              // Setup The Diffuse Light
+        GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION,asFloatBuffer(lightPosition));
+
+        GL11.glEnable(GL11.GL_LIGHT1);
+        GL11.glEnable ( GL11.GL_LIGHTING ) ;
+
         GLU.gluPerspective(
                 67.0f, //FOV
                 Constants.SCREEN_WIDTH/Constants.SCREEN_HEIGHT, //Aspect Ratio

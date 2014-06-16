@@ -47,7 +47,7 @@ public class Main {
         GL11.glMatrixMode(GL11.GL_PROJECTION);
         GL11.glLoadIdentity();
 
-        float lightAmbient[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        float lightAmbient[] = { 2.0f, 2.0f, 2.0f, 2.0f };
         float lightDiffuse[] = { 0.5f, 0.5f, 0.5f, 1.0f };
         float lightPosition[] = { 0.0f, 1.0f, 1.0f, 0.0f };
 

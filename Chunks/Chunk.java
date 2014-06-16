@@ -118,7 +118,7 @@ public class Chunk {
         VBOVertexHandle = GL15.glGenBuffers();
 
         FloatBuffer vertexPositionData = BufferUtils.createFloatBuffer(((12*6)*activateBlocks));
-        FloatBuffer vertexNormalData = BufferUtils.createFloatBuffer(((6*3)*6)*activateBlocks);
+        FloatBuffer vertexNormalData = BufferUtils.createFloatBuffer(((6*3)*4)*activateBlocks);
         FloatBuffer vertexTextureData = BufferUtils.createFloatBuffer(((8*6)*activateBlocks));
 
         dirtTexture.bind();
@@ -266,16 +266,33 @@ public class Chunk {
     public void putNormals(FloatBuffer vertexNormalData) {
         float[] normals = new float[] {
                 0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, -1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
+                0.0f, 0.0f, 1.0f,
                 0.0f, 0.0f, 1.0f,
                 1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
+                -1.0f, 0.0f, 0.0f,
                 -1.0f, 0.0f, 0.0f,
                 0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
+                0.0f, -1.0f, 0.0f,
                 0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f,
+                0.0f, 1.0f, 0.0f
         };
 
-        for(int i=0; i<6; i++) {
-            vertexNormalData.put(normals);
-        }
+        vertexNormalData.put(normals);
+
     }
 
     public boolean occlusionCulling(int x, int y, int z) {

@@ -14,14 +14,14 @@ import java.util.Vector;
 public class ChunkManager {
     private ArrayList<Chunk> chunks;
 
-    private int CHUNKS_LOADED_PER_FRAME = 6;
+    private int CHUNKS_LOADED_PER_FRAME = 3;
     private int renderedChunks = 0, numChunks = 0;
     private boolean chunksInitiated = false;
 
     private Vector3f playerPosition;
 
 
-    SimplexNoise simplexNoise = new SimplexNoise(100, 0.05, 5000);
+    SimplexNoise simplexNoise = new SimplexNoise(800, 0.65, 512);
 
     public ChunkManager() {
         chunks = new ArrayList<Chunk>();
@@ -37,10 +37,10 @@ public class ChunkManager {
     }
 
     public void initChunks() {
-        chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), 0, 0, simplexNoise));
+        //chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), 0, 0, simplexNoise));
         for (int x = 0; x < Constants.VIEW_DISTANCE; x++) {
             for (int z = 0; z < Constants.VIEW_DISTANCE; z++) {
-                chunks.add(new Chunk(playerPosition.getX(), playerPosition.getZ(), x, z, simplexNoise));
+                chunks.add(new Chunk(x, z, simplexNoise));
             }
         }
         chunksInitiated=true;

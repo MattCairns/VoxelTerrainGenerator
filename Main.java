@@ -13,6 +13,8 @@ import org.lwjgl.util.glu.GLU;
 
 import java.nio.FloatBuffer;
 
+import static org.lwjgl.opengl.GL11.*;
+
 public class Main {
     public Main(){
         try {
@@ -37,6 +39,10 @@ public class Main {
 
 
     private void InitGL() {
+        //Textures setup
+//        glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
         //Automatically removes faces not visible to camera.
         GL11.glEnable(GL11.GL_CULL_FACE);
         GL11.glShadeModel(GL11.GL_SMOOTH);

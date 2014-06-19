@@ -74,7 +74,7 @@ public class ChunkManager {
         frustum.calculateFrustum();
         for(Chunk chunk : chunks) {
             if (chunk.isChunkCreated()) {
-                if(frustum.cubeInFrustum(chunk.getChunkLocation().getX(), chunk.getChunkLocation().getY(), chunk.getChunkLocation().getZ(), Constants.BLOCK_SIZE*Constants.CHUNK_SIZE)) {
+                if(frustum.cubeInFrustum(chunk.getChunkLocation().getX(), chunk.getChunkLocation().getY(), chunk.getChunkLocation().getZ(), (16*Constants.BLOCK_SIZE)*2)) {
                     chunk.drawChunk();
                     numChunks++;
                 }

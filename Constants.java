@@ -8,9 +8,9 @@ public class Constants {
     public static float SCREEN_WIDTH = 1280.0f;
     public static float SCREEN_HEIGHT = 720.0f;
 
-    public static float BLOCK_SIZE = 5.0f;
+    public static float BLOCK_SIZE = 10.0f;
 
     public static int CHUNK_SIZE = 16;
-    public static int VIEW_DISTANCE = 25;
+    public static int VIEW_DISTANCE = 20;
 
 }

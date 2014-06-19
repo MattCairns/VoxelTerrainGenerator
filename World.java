@@ -4,8 +4,8 @@ import com.matthewcairns.voxel.Chunks.ChunkManager;
 import org.lwjgl.Sys;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.util.glu.GLU;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.util.glu.GLU.*;
 
 /**
  * Created by Matthew Cairns on 13/06/2014.
@@ -30,44 +30,41 @@ public class World {
     }
 
     public void update() {
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         controlCamera();
         cm.update(camera.getPosition());
-
-       // overlayUI();
-
     }
+
 
     private void overlayUI() {
-        GL11.glPushMatrix();
-        GL11.glMatrixMode(GL11.GL_PROJECTION);
-        GL11.glLoadIdentity();
-        GL11.glDisable(GL11.GL_DEPTH_TEST);
-        GL11.glOrtho(0, 1280, 720, 0, 1, -1);
-        GL11.glEnable(GL11.GL_BLEND);
-        GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0, 1280, 720, 0, 1, -1);
+        glMatrixMode(GL_MODELVIEW);
+        glDisable(GL_DEPTH_TEST);
 
-        updateFPS();
-        hud.drawFont(100, 25, "chunk_count: " + cm.getNumberOfChunks());
-        hud.drawFont(100, 10, "block_count: " + cm.getNumberOfChunks()*(16*16));
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        GL11.glPopMatrix();
+
+
+        swap3d();
     }
-//
-//    private void swap3d() {
-//        GL11.glDisable(GL11.GL_BLEND);
-//        GL11.glEnable(GL11.GL_DEPTH_TEST);
-//        GL11.glMatrixMode(GL11.GL_PROJECTION);
-//        GL11.glLoadIdentity();
-//        GLU.gluPerspective(
-//                67.0f, //FOV
-//                Constants.SCREEN_WIDTH/Constants.SCREEN_HEIGHT, //Aspect Ratio
-//                0.1f, //zNear
-//                10000.0f); //zFar
-//        GL11.glMatrixMode(GL11.GL_MODELVIEW);
-//    }
+
+    private void swap3d() {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluPerspective(
+                67.0f, //FOV
+                Constants.SCREEN_WIDTH / Constants.SCREEN_HEIGHT, //Aspect Ratio
+                0.1f, //zNear
+                10000.0f); //zFar
+        glMatrixMode(GL_MODELVIEW);
+        glEnable(GL_DEPTH_TEST);
+        glDisable(GL_BLEND);
+
+    }
 
     private void controlCamera() {
         float dt = getDeltaTime();

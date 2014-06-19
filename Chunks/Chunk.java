@@ -3,9 +3,9 @@ package com.matthewcairns.voxel.Chunks;
 import com.matthewcairns.voxel.Constants;
 import com.matthewcairns.voxel.Noise.SimplexNoise;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL30;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL30.*;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
@@ -14,9 +14,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.Random;
-
-import static org.lwjgl.opengl.GL11.*;
 
 /**
  * Created by Matthew Cairns on 04/06/2014.
@@ -95,34 +92,34 @@ public class Chunk {
     }
 
     public void drawChunk() {
-        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_NEAREST);
-        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);
-        GL11.glVertexPointer(3, GL11.GL_FLOAT, 0, 0L);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOVertexHandle);
+        glVertexPointer(3, GL_FLOAT, 0, 0L);
 
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBONormalHandle);
-        GL11.glNormalPointer(GL11.GL_FLOAT, 0, 0L);
+        glBindBuffer(GL_ARRAY_BUFFER, VBONormalHandle);
+        glNormalPointer(GL_FLOAT, 0, 0L);
 
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOTextureHandle);
-        GL11.glTexCoordPointer(2, GL11.GL_FLOAT, 0, 0L);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOTextureHandle);
+        glTexCoordPointer(2, GL_FLOAT, 0, 0L);
 
         //Enable Vertex Buffer Object rendering (VBO)
-        GL11.glEnableClientState(GL11.GL_VERTEX_ARRAY);
-        GL11.glEnableClientState(GL11.GL_NORMAL_ARRAY);
-        GL11.glEnableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_NORMAL_ARRAY);
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-        GL11.glDrawArrays(GL11.GL_QUADS, 0, ((24)*activateBlocks));
+        glDrawArrays(GL_QUADS, 0, ((24)*activateBlocks));
 
         //Disable Vertex Buffer Object rendering (VBO)
-        GL11.glDisableClientState(GL11.GL_VERTEX_ARRAY);
-        GL11.glDisableClientState(GL11.GL_TEXTURE_COORD_ARRAY);
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
     public void createChunk() {
-        VBOTextureHandle = GL15.glGenBuffers();
-        VBONormalHandle = GL15.glGenBuffers();
-        VBOVertexHandle = GL15.glGenBuffers();
+        VBOTextureHandle = glGenBuffers();
+        VBONormalHandle = glGenBuffers();
+        VBOVertexHandle = glGenBuffers();
 
         FloatBuffer vertexPositionData = BufferUtils.createFloatBuffer(((12*6)*activateBlocks));
         FloatBuffer vertexNormalData = BufferUtils.createFloatBuffer(((6*3)*4)*activateBlocks);
@@ -186,19 +183,19 @@ public class Chunk {
 
 
         vertexPositionData.flip();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexPositionData, GL15.GL_STATIC_DRAW);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOVertexHandle);
+        glBufferData(GL_ARRAY_BUFFER, vertexPositionData, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         vertexNormalData.flip();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBONormalHandle);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexNormalData, GL15.GL_STATIC_DRAW);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, VBONormalHandle);
+        glBufferData(GL_ARRAY_BUFFER, vertexNormalData, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         vertexTextureData.flip();
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOTextureHandle);
-        GL15.glBufferData(GL15.GL_ARRAY_BUFFER, vertexTextureData, GL15.GL_STATIC_DRAW);
-        GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, VBOTextureHandle);
+        glBufferData(GL_ARRAY_BUFFER, vertexTextureData, GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
     public void putVertices(float tx, float ty, float tz, FloatBuffer vertexPositionData) {
@@ -283,8 +280,8 @@ public class Chunk {
     }
 
     public void dispose() {
-        GL15.glDeleteBuffers(VBOTextureHandle);
-        GL15.glDeleteBuffers(VBOVertexHandle);
+        glDeleteBuffers(VBOTextureHandle);
+        glDeleteBuffers(VBOVertexHandle);
     }
 
     public boolean isChunkCreated() {

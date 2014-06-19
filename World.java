@@ -76,7 +76,7 @@ public class World {
         float dy = Mouse.getDY();
 
         float mouseSpeed = 0.5f;
-        float movementSpeed = 5.0f;
+        float movementSpeed = 10.0f;
 
         camera.yaw(dx*mouseSpeed);
         camera.pitch(dy*mouseSpeed);

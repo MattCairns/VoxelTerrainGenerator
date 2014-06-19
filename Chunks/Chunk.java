@@ -5,6 +5,8 @@ import com.matthewcairns.voxel.Noise.SimplexNoise;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
 import org.newdawn.slick.opengl.TextureLoader;
 
@@ -63,10 +65,10 @@ public class Chunk {
                 if(height >= Constants.CHUNK_SIZE)
                     height = Constants.CHUNK_SIZE;
                 for (int y = 0; y < height; y++) {
-//                    if(newHeight <= 1) {
-//                        blocks[x][y][z].setBlockType(Block.BlockType.BlockType_Water);
-//                    }
-                    if(height <= 4) { //&& newHeight > 1) {
+                    if(height <= 1) {
+                        blocks[x][y][z].setBlockType(Block.BlockType.BlockType_Water);
+                    }
+                    if(height <= 4 && height > 1) {
                         blocks[x][y][z].setBlockType(Block.BlockType.BlockType_Dirt);
                     }
                     if(height > 4) {
@@ -92,10 +94,10 @@ public class Chunk {
         dirtTexture = loadTexture("terrain.png");
     }
 
-
     public void drawChunk() {
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST); //GL_LINEAR);
-        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); //GL_LINEAR);
+        GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_NEAREST_MIPMAP_NEAREST);
+        GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);
         GL11.glVertexPointer(3, GL11.GL_FLOAT, 0, 0L);
 
@@ -132,87 +134,56 @@ public class Chunk {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
                 for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
 
-                    if(occlusionCulling(x, y, z)) {
+                    if (occlusionCulling(x, y, z)) {
                         continue;
                     }
 
-                    if(blocks[x][y][z].getActive()) {
+                    if (blocks[x][y][z].getActive()) {
                         putNormals(vertexNormalData);
 
-                        putVertices((x*2)*Constants.BLOCK_SIZE, (-y*2)*Constants.BLOCK_SIZE, (z*2)*Constants.BLOCK_SIZE, vertexPositionData);
+                        putVertices((x * 2) * Constants.BLOCK_SIZE, (-y * 2) * Constants.BLOCK_SIZE, (z * 2) * Constants.BLOCK_SIZE, vertexPositionData);
 
-                        if(blocks[x][y][z].type.GetID() == 1) {
-                            vertexTextureData.put(new float[]{
-                                    0.0f, 0.0f,
-                                    0.0f, 0.0625f,
-                                    0.0625f, 0.0625f,
-                                    0.0625f, 0.0f,
-
-                                    0.0f, 0.0f,
-                                    0.0f, 0.0625f,
-                                    0.0625f, 0.0625f,
-                                    0.0625f, 0.0f,
-
-                                    0.0f, 0.0f,
-                                    0.0f, 0.0625f,
-                                    0.0625f, 0.0625f,
-                                    0.0625f, 0.0f,
-
-                                    0.0f, 0.0f,
-                                    0.0f, 0.0625f,
-                                    0.0625f, 0.0625f,
-                                    0.0625f, 0.0f,
-
-                                    0.0f, 0.0f,
-                                    0.0f, 0.062f,
-                                    0.0625f, 0.0625f,
-                                    0.0625f, 0.0f,
-
-                                    0.0f, 0.0f,
-                                    0.0f, 0.0625f,
-                                    0.0625f, 0.0625f,
-                                    0.0625f, 0.0f
-                            });
+                        if (blocks[x][y][z].type.GetID() == 1) {
+                            float[] textureCoords = new float[]{
+                                    0.0f, 0.0f, //Top left
+                                    0.0f, 0.05f, //Bottom left
+                                    0.05f, 0.05f, //Bottom right
+                                    0.05f, 0.0f, //Top right
+                            };
+                            for (int i = 0; i < 6; i++) {
+                                vertexTextureData.put(textureCoords);
+                            }
                         }
 
-                        if(blocks[x][y][z].type.GetID() == 2) {
-                            vertexTextureData.put(new float[]{
+                        if (blocks[x][y][z].type.GetID() == 2) {
+                            float[] textureCoords = new float[]{
                                     0.125f, 0.0f,
                                     0.125f, 0.0625f,
                                     0.1875f, 0.0625f,
                                     0.1875f, 0.0f,
+                            };
+                            for (int i = 0; i < 6; i++) {
+                                vertexTextureData.put(textureCoords);
+                            }
+                        }
 
-                                    0.125f, 0.0f,
-                                    0.125f, 0.0625f,
-                                    0.1875f, 0.0625f,
-                                    0.1875f, 0.0f,
 
-                                    0.125f, 0.0f,
-                                    0.125f, 0.0625f,
-                                    0.1875f, 0.0625f,
-                                    0.1875f, 0.0f,
-
-                                    0.125f, 0.0f,
-                                    0.125f, 0.0625f,
-                                    0.1875f, 0.0625f,
-                                    0.1875f, 0.0f,
-
-                                    0.125f, 0.0f,
-                                    0.125f, 0.0625f,
-                                    0.1875f, 0.0625f,
-                                    0.1875f, 0.0f,
-
-                                    0.125f, 0.0f,
-                                    0.125f, 0.0625f,
-                                    0.1875f, 0.0625f,
-                                    0.1875f, 0.0f,
-
-                            });
+                        if (blocks[x][y][z].type.GetID() == 3) {
+                            float[] textureCoords = new float[]{
+                                    0.9375f, 0.8125f, //Top left
+                                    0.9375f, 0.875f, //Bottom left
+                                    1.0f, 0.875f, //Bottom right
+                                    1.0f, 0.8125f, //Top right
+                            };
+                            for (int i = 0; i < 6; i++) {
+                                vertexTextureData.put(textureCoords);
+                            }
                         }
                     }
                 }
             }
         }
+
 
         vertexPositionData.flip();
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, VBOVertexHandle);
@@ -332,12 +303,18 @@ public class Chunk {
         this.chunkLoaded = chunkLoaded;
     }
 
+    public Vector3f getChunkLocation() {
+        return new Vector3f(xOffset, 0, zOffset);
+    }
+
     public static Texture loadTexture(String texName) {
     try {
         return TextureLoader.getTexture("png", new FileInputStream(new File("assets/" + texName)));
     } catch (IOException e) {
         e.printStackTrace();
     }
+
+
     return null;
 }
 

@@ -18,10 +18,12 @@ public class ChunkManager {
     private int renderedChunks = 0, numChunks = 0;
     private boolean chunksInitiated = false;
 
+    private Frustum frustum = new Frustum();
+
     private Vector3f playerPosition;
 
 
-    SimplexNoise simplexNoise = new SimplexNoise(800, 0.65, 512);
+    SimplexNoise simplexNoise = new SimplexNoise(800, 0.65, 1827387);
 
     public ChunkManager() {
         chunks = new ArrayList<Chunk>();
@@ -69,13 +71,17 @@ public class ChunkManager {
     }
 
     public void renderChunks() {
+        frustum.calculateFrustum();
         for(Chunk chunk : chunks) {
             if (chunk.isChunkCreated()) {
-                chunk.drawChunk();
-                numChunks++;
+                if(frustum.cubeInFrustum(chunk.getChunkLocation().getX(), chunk.getChunkLocation().getY(), chunk.getChunkLocation().getZ(), Constants.BLOCK_SIZE*Constants.CHUNK_SIZE)) {
+                    chunk.drawChunk();
+                    numChunks++;
+                }
             }
         }
         renderedChunks = numChunks;
+        System.out.println(numChunks);
 
         numChunks = 0;
     }

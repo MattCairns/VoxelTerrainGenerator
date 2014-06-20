@@ -11,6 +11,6 @@ public class Constants {
     public static float BLOCK_SIZE = 10.0f;
 
     public static int CHUNK_SIZE = 16;
-    public static int VIEW_DISTANCE = 20;
+    public static int VIEW_DISTANCE = 40;
 
 }

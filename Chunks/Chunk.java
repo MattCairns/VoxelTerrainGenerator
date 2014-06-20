@@ -37,9 +37,9 @@ public class Chunk {
     private Block blocks[][][] = new Block[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     private int activateBlocks = 0;
 
-    public Chunk(float x, float z, SimplexNoise simplexNoise) {
-        xOffset = (x*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
-        zOffset = (z*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
+    public Chunk(float px, float pz, float x, float z, SimplexNoise simplexNoise) {
+        xOffset = px + (x*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
+        zOffset = pz + (z*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
 
         this.simplexNoise = simplexNoise;
     }
@@ -56,7 +56,6 @@ public class Chunk {
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
                 double height = 16*(simplexNoise.getNoise((x+(xOffset/2)/Constants.BLOCK_SIZE),(z+(zOffset/2)/Constants.BLOCK_SIZE)));
-
                 if(height <= 0)
                     height = 1;
                 if(height >= Constants.CHUNK_SIZE)
@@ -73,6 +72,9 @@ public class Chunk {
                     }
                     blocks[x][y][z].setActive(true);
                     activateBlocks += 1;
+
+                    blocks[x][y][z].setLocation(new Vector3f(x+xOffset, y+(float)height, z+zOffset));
+
                 }
             }
         }
@@ -82,11 +84,10 @@ public class Chunk {
                 for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
                     if(occlusionCulling(x, y, z)) {
                         activateBlocks--;
-                    }                }
+                    }
+                }
             }
         }
-
-
 
         dirtTexture = loadTexture("terrain.png");
     }
@@ -277,11 +278,6 @@ public class Chunk {
         faceHidden[5] = z < Constants.CHUNK_SIZE - 1 && blocks[x][y][z + 1].getActive();
 
         return faceHidden[0] && faceHidden[1]  && faceHidden[2] && faceHidden[3] && faceHidden[4] && faceHidden[5];
-    }
-
-    public void dispose() {
-        glDeleteBuffers(VBOTextureHandle);
-        glDeleteBuffers(VBOVertexHandle);
     }
 
     public boolean isChunkCreated() {

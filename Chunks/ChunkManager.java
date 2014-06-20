@@ -22,8 +22,7 @@ public class ChunkManager {
 
     private Vector3f playerPosition;
 
-
-    SimplexNoise simplexNoise = new SimplexNoise(800, 0.65, 1827387);
+    SimplexNoise simplexNoise = new SimplexNoise(800, 0.71, 1234);
 
     public ChunkManager() {
         chunks = new ArrayList<Chunk>();
@@ -36,13 +35,18 @@ public class ChunkManager {
         loadChunks();
         createChunks();
         renderChunks();
+
+        checkCollisions();
     }
 
     public void initChunks() {
-        //chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), 0, 0, simplexNoise));
-        for (int x = 0; x < Constants.VIEW_DISTANCE; x++) {
-            for (int z = 0; z < Constants.VIEW_DISTANCE; z++) {
-                chunks.add(new Chunk(x, z, simplexNoise));
+        chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), 0, 0, simplexNoise));
+        for (int x = 0; x < Constants.VIEW_DISTANCE/2; x++) {
+            for (int z = 0; z < Constants.VIEW_DISTANCE/2; z++) {
+                chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), x, z, simplexNoise));
+                chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), -x, -z, simplexNoise));
+                chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), x, -z, simplexNoise));
+                chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), -x, z, simplexNoise));
             }
         }
         chunksInitiated=true;
@@ -81,20 +85,23 @@ public class ChunkManager {
             }
         }
         renderedChunks = numChunks;
-        System.out.println(numChunks);
-
         numChunks = 0;
     }
 
-    public void removeChunks() {
-        int chunksRemoved= 0;
-        for(Chunk chunk : chunks) {
-            if (!chunk.isChunkCreated() && chunk.isChunkLoaded() && chunksRemoved < CHUNKS_LOADED_PER_FRAME) {
-                chunk.createChunk();
-                chunk.setChunkCreated(true);
-                chunksRemoved++;
-            }
-        }
+//    public void removeChunks() {
+//        int chunksRemoved= 0;
+//        for(Chunk chunk : chunks) {
+//            if (!chunk.isChunkCreated() && chunk.isChunkLoaded() && chunksRemoved < CHUNKS_LOADED_PER_FRAME) {
+//                chunk.createChunk();
+//                chunk.getVoxelAtLocation();
+//                chunk.setChunkCreated(true);
+//                chunksRemoved++;
+//            }
+//        }
+//    }
+
+    private void checkCollisions() {
+
     }
 
     public int getNumberOfChunks() {

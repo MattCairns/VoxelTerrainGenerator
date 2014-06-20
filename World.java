@@ -12,7 +12,7 @@ import static org.lwjgl.util.glu.GLU.*;
  * All rights reserved.
  */
 public class World {
-    private FPCameraController camera = new FPCameraController(0,100,0);
+    private FPCameraController camera = new FPCameraController(60,100,100);
 
     float lastFrame = 0.0f;
     int fps, savedFPS;

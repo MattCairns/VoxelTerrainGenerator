@@ -1,12 +1,17 @@
 package com.matthewcairns.voxel.Chunks;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.util.vector.Vector3f;
+
+import java.util.Vector;
 
 /**
  * Created by Matthew Cairns on 04/06/2014.
  * All rights reserved.
  */
 public class Block {
+    private Vector3f blockLocation;
+
     public BlockType type;
     public enum BlockType {
         BlockType_Default(0),
@@ -42,6 +47,8 @@ public class Block {
     public void setActive(boolean active) {
         IsActive = active;
     }
+
+    public void setLocation(Vector3f loc) { blockLocation = loc; }
 
 
 }

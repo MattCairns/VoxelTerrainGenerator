@@ -2,9 +2,11 @@ package com.matthewcairns.voxel.Chunks;
 
 import com.matthewcairns.voxel.Constants;
 import com.matthewcairns.voxel.Noise.SimplexNoise;
+import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -21,6 +23,7 @@ public class ChunkManager {
     private Frustum frustum = new Frustum();
 
     private Vector3f playerPosition;
+    private int playerChunkLocation=0;
 
     SimplexNoise simplexNoise = new SimplexNoise(800, 0.71, 1234);
 
@@ -35,6 +38,9 @@ public class ChunkManager {
         loadChunks();
         createChunks();
         renderChunks();
+        //checkChunkPlayerIsIn();
+        //checkChunksInView();
+        unloadChunks();
 
         checkCollisions();
     }
@@ -88,17 +94,32 @@ public class ChunkManager {
         numChunks = 0;
     }
 
-//    public void removeChunks() {
-//        int chunksRemoved= 0;
-//        for(Chunk chunk : chunks) {
-//            if (!chunk.isChunkCreated() && chunk.isChunkLoaded() && chunksRemoved < CHUNKS_LOADED_PER_FRAME) {
-//                chunk.createChunk();
-//                chunk.getVoxelAtLocation();
-//                chunk.setChunkCreated(true);
-//                chunksRemoved++;
-//            }
-//        }
-//    }
+    public void unloadChunks() {
+        Iterator<Chunk> itr = chunks.iterator();
+
+        while(itr.hasNext()) {
+            if (getPlayerDistanceFromChunk(itr.next()) > 2000) {
+                itr.remove();
+
+            }
+        }
+    }
+
+    public double getPlayerDistanceFromChunk(Chunk chunk) {
+        return Math.sqrt((playerPosition.getX()+chunk.getChunkLocation().getX())*(playerPosition.getX()+chunk.getChunkLocation().getX()) +
+                        (playerPosition.getZ()+chunk.getChunkLocation().getZ())*(playerPosition.getZ()+chunk.getChunkLocation().getZ()));
+    }
+
+    private void checkChunkPlayerIsIn() {
+        int chunk = (int)playerPosition.getX() / 16;
+        if(playerChunkLocation != chunk) {
+            chunks.clear();
+            initChunks();
+            playerChunkLocation = chunk;
+        }
+
+        System.out.println(chunk);
+    }
 
     private void checkCollisions() {
 

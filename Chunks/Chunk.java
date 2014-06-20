@@ -32,7 +32,7 @@ public class Chunk {
 
     private boolean[] faceHidden = new boolean[6];
 
-    private boolean chunkCreated = false, chunkLoaded = false;
+    private boolean chunkCreated = false, chunkLoaded = false, unloadChunk = false;
 
     private Block blocks[][][] = new Block[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     private int activateBlocks = 0;
@@ -294,6 +294,14 @@ public class Chunk {
 
     public void setChunkLoaded(boolean chunkLoaded) {
         this.chunkLoaded = chunkLoaded;
+    }
+
+    public boolean isUnloadChunk() {
+        return unloadChunk;
+    }
+
+    public void setUnloadChunk(boolean unloadChunk) {
+        this.unloadChunk = unloadChunk;
     }
 
     public Vector3f getChunkLocation() {

@@ -23,7 +23,8 @@ public class Chunk {
     private int VBOVertexHandle;
     private int VBONormalHandle;
     private int VBOTextureHandle;
-    private Texture dirtTexture;
+
+    private Texture textureAtlas;
 
     private SimplexNoise simplexNoise;
 
@@ -37,9 +38,9 @@ public class Chunk {
     private Block blocks[][][] = new Block[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
     private int activateBlocks = 0;
 
-    public Chunk(float px, float pz, float x, float z, SimplexNoise simplexNoise) {
-        xOffset = px + (x*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
-        zOffset = pz + (z*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
+    public Chunk(float playerLocX, float playerLocZ, float x, float z, SimplexNoise simplexNoise) {
+        xOffset = playerLocX + (x*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
+        zOffset = playerLocZ + (z*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
 
         this.simplexNoise = simplexNoise;
     }
@@ -60,6 +61,7 @@ public class Chunk {
                     height = 1;
                 if(height >= Constants.CHUNK_SIZE)
                     height = Constants.CHUNK_SIZE;
+
                 for (int y = 0; y < height; y++) {
                     if(height <= 1) {
                         blocks[x][y][z].setBlockType(Block.BlockType.BlockType_Water);
@@ -74,28 +76,20 @@ public class Chunk {
                     activateBlocks += 1;
 
                     blocks[x][y][z].setLocation(new Vector3f(x+xOffset, y+(float)height, z+zOffset));
-
                 }
             }
         }
 
-        for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
-            for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
-                for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                    if(occlusionCulling(x, y, z)) {
-                        activateBlocks--;
-                    }
-                }
-            }
-        }
-
-        dirtTexture = loadTexture("terrain.png");
+        textureAtlas = loadTexture("terrain.png");
     }
 
     public void drawChunk() {
+        //LOD Mipmapping setup
         glGenerateMipmap(GL_TEXTURE_2D);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+
         glBindBuffer(GL_ARRAY_BUFFER, VBOVertexHandle);
         glVertexPointer(3, GL_FLOAT, 0, 0L);
 
@@ -126,7 +120,8 @@ public class Chunk {
         FloatBuffer vertexNormalData = BufferUtils.createFloatBuffer(((6*3)*4)*activateBlocks);
         FloatBuffer vertexTextureData = BufferUtils.createFloatBuffer(((8*6)*activateBlocks));
 
-        dirtTexture.bind();
+        //Bind the texture to OpenGL
+        textureAtlas.bind();
 
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {

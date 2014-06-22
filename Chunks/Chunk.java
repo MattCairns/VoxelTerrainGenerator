@@ -2,6 +2,7 @@ package com.matthewcairns.voxel.Chunks;
 
 import com.matthewcairns.voxel.Constants;
 import com.matthewcairns.voxel.Noise.SimplexNoise;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
@@ -35,7 +36,7 @@ public class Chunk {
 
     private boolean chunkCreated = false, chunkLoaded = false, unloadChunk = false;
 
-    private Block blocks[][][] = new Block[Constants.CHUNK_SIZE][Constants.CHUNK_SIZE][Constants.CHUNK_SIZE];
+    private Block blocks[] = new Block[Constants.CHUNK_SIZE * Constants.CHUNK_SIZE * Constants.CHUNK_SIZE];
     private int activateBlocks = 0;
 
     public Chunk(float playerLocX, float playerLocZ, float x, float z, SimplexNoise simplexNoise) {
@@ -49,7 +50,7 @@ public class Chunk {
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
                 for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
-                    blocks[x][y][z] = new Block();
+                    blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)] = new Block();
                 }
             }
         }
@@ -64,18 +65,18 @@ public class Chunk {
 
                 for (int y = 0; y < height; y++) {
                     if(height <= 1) {
-                        blocks[x][y][z].setBlockType(Block.BlockType.BlockType_Water);
+                        blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].setBlockType(Block.BlockType.BlockType_Water);
                     }
                     if(height <= 4 && height > 1) {
-                        blocks[x][y][z].setBlockType(Block.BlockType.BlockType_Dirt);
+                        blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].setBlockType(Block.BlockType.BlockType_Dirt);
                     }
                     if(height > 4) {
-                        blocks[x][y][z].setBlockType(Block.BlockType.BlockType_Grass);
+                        blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].setBlockType(Block.BlockType.BlockType_Grass);
                     }
-                    blocks[x][y][z].setActive(true);
+                    blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].setActive(true);
                     activateBlocks += 1;
 
-                    blocks[x][y][z].setLocation(new Vector3f(x+xOffset, y+(float)height, z+zOffset));
+                    blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].setLocation(new Vector3f(x+xOffset, y+(float)height, z+zOffset));
                 }
             }
         }
@@ -131,23 +132,23 @@ public class Chunk {
                         continue;
                     }
 
-                    if (blocks[x][y][z].getActive()) {
+                    if (blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].getActive()) {
                         vertexNormalData.put(BlockData.cubeNormals());
                         vertexPositionData.put(BlockData.cubeVertices(xOffset, zOffset,(x * 2) * Constants.BLOCK_SIZE, (-y * 2) * Constants.BLOCK_SIZE, (z * 2) * Constants.BLOCK_SIZE));
 
-                        if (blocks[x][y][z].type.GetID() == 1) {
+                        if (blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].type.GetID() == 1) {
                             for (int i = 0; i < 6; i++) {
                                 vertexTextureData.put(BlockData.grass());
                             }
                         }
 
-                        if (blocks[x][y][z].type.GetID() == 2) {
+                        if (blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].type.GetID() == 2) {
                             for (int i = 0; i < 6; i++) {
                                 vertexTextureData.put(BlockData.dirt());
                             }
                         }
 
-                        if (blocks[x][y][z].type.GetID() == 3) {
+                        if (blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].type.GetID() == 3) {
                             for (int i = 0; i < 6; i++) {
                                 vertexTextureData.put(BlockData.water());
                             }
@@ -175,12 +176,12 @@ public class Chunk {
 
 
     public boolean occlusionCulling(int x, int y, int z) {
-        faceHidden[0] = x > 0 && blocks[x - 1][y][z].getActive();
-        faceHidden[1] = x < Constants.CHUNK_SIZE - 1 && blocks[x + 1][y][z].getActive();
-        faceHidden[2] = y > 0 && blocks[x][y - 1][z].getActive();
-        faceHidden[3] = y < Constants.CHUNK_SIZE - 1 && blocks[x][y + 1][z].getActive();
-        faceHidden[4] = z > 0 && blocks[x][y][z - 1].getActive();
-        faceHidden[5] = z < Constants.CHUNK_SIZE - 1 && blocks[x][y][z + 1].getActive();
+        faceHidden[0] = x > 0 && blocks[(x-1) + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].getActive();
+        faceHidden[1] = x < Constants.CHUNK_SIZE - 1 && blocks[(x+1) + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].getActive();
+        faceHidden[2] = y > 0 && blocks[x + Constants.CHUNK_SIZE * ((y-1) + Constants.CHUNK_SIZE * z)].getActive();
+        faceHidden[3] = y < Constants.CHUNK_SIZE - 1 && blocks[x + Constants.CHUNK_SIZE * ((y+1) + Constants.CHUNK_SIZE * z)].getActive();
+        faceHidden[4] = z > 0 && blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * (z-1))].getActive();
+        faceHidden[5] = z < Constants.CHUNK_SIZE - 1 && blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * (z+1))].getActive();
 
         return faceHidden[0] && faceHidden[1]  && faceHidden[2] && faceHidden[3] && faceHidden[4] && faceHidden[5];
     }

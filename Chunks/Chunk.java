@@ -39,14 +39,14 @@ public class Chunk {
     private Block blocks[] = new Block[Constants.CHUNK_SIZE * Constants.CHUNK_SIZE * Constants.CHUNK_SIZE];
     private int activateBlocks = 0;
 
-    public Chunk(float playerLocX, float playerLocZ, float x, float z, SimplexNoise simplexNoise) {
-        xOffset = playerLocX + (x*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
-        zOffset = playerLocZ + (z*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
+    public Chunk(float playerLocX, float playerLocZ, float bx, float bz, SimplexNoise simplexNoise) {
+        xOffset = playerLocX + (bx*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
+        zOffset = playerLocZ + (bz*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
+
+        System.out.println(xOffset + ", " + zOffset);
 
         this.simplexNoise = simplexNoise;
-    }
 
-    public void createBlocks() {
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
                 for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
@@ -54,7 +54,9 @@ public class Chunk {
                 }
             }
         }
+    }
 
+    public void createBlocks() {
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
                 double height = 16*(simplexNoise.getNoise((x+(xOffset/2)/Constants.BLOCK_SIZE),(z+(zOffset/2)/Constants.BLOCK_SIZE)));

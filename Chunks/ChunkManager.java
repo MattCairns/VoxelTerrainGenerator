@@ -14,7 +14,7 @@ import java.util.Iterator;
 public class ChunkManager {
     private ArrayList<Chunk> chunks;
 
-    private int CHUNKS_LOADED_PER_FRAME = 3;
+    private int CHUNKS_LOADED_PER_FRAME = 1;
     private int renderedChunks = 0, numChunks = 0;
     private boolean chunksInitiated = false;
 
@@ -36,21 +36,28 @@ public class ChunkManager {
         loadChunks();
         createChunks();
         renderChunks();
-        checkForNewChucks();
+        //checkForNewChucks();
         unloadChunks();
 
-        checkCollisions();
+        //checkCollisions();
     }
 
     public void initChunks() {
-        //chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), 0, 0, simplexNoise));
-        for (int x = 0; x < Constants.VIEW_DISTANCE/2; x++) {
-            for (int z = 0; z < Constants.VIEW_DISTANCE/2; z++) {
+        //This loop will make the chunks render in a spiral around the player.
+        int x = 0, z = 0, dx = 0, dz = -1, t;
+        for(int i = 0; i < Constants.VIEW_DISTANCE*Constants.VIEW_DISTANCE; i++) {
+            if ((-Constants.VIEW_DISTANCE/2 <= x)
+                    && (x <= Constants.VIEW_DISTANCE/2)
+                    && (-Constants.VIEW_DISTANCE/2 <= z)
+                    && (z <= Constants.VIEW_DISTANCE/2)) {
+
                 chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), x, z, simplexNoise));
-                chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), -x, -z, simplexNoise));
-                chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), x, -z, simplexNoise));
-                chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), -x, z, simplexNoise));
+
             }
+            if( (x == z) || ((x < 0) && (x == -z)) || ((x > 0) && (x == 1-z))) {
+                t=dx; dx=-dz; dz=t;
+            }
+            x+=dx; z+=dz;
         }
         chunksInitiated=true;
     }
@@ -102,7 +109,7 @@ public class ChunkManager {
     }
 
     private void checkForNewChucks() {
-//        chunkPlayerIsIn();
+        //chunkPlayerIsIn();
 
     }
 
@@ -121,19 +128,19 @@ public class ChunkManager {
     }
 
 //    private float chunkPlayerIsIn() {
-////        int xx = playerPosition.getX() / Constants.CHUNK_SIZE;
-////        int yy = playerPosition.getY() / Constants.CHUNK_SIZE;
-////        int zz = playerPosition.getZ() / Constants.CHUNK_SIZE;
+//        int xx = (int)Math.floor(playerPosition.getX() / Constants.CHUNK_SIZE);
+//        int zz = (int)Math.floor(playerPosition.getZ() / Constants.CHUNK_SIZE);
 //
-//
-//        Vector3f v = new Vector3f(xx, yy, zz);
-//        for(Chunk chunk : chunks) {
-//            v = chunk.getChunkLocation();
-//            if(v.getX() + Constants.CHUNK_SIZE*Constants.BLOCK_SIZE > xx && v.getZ() + Constants.CHUNK_SIZE*Constants.BLOCK_SIZE > zz  &&
-//                    v.getX() < playerPosition.getX() && v.getZ() < playerPosition.getZ()) {
-//                System.out.println(chunk);
-//            }
-//        }
+//        System.out.println(Math.floor(playerPosition.getX()) + ", " + Math.floor(playerPosition.getZ()));
+//        System.out.println(xx + ", " + zz);
+////        Vector3f v = new Vector3f(xx, yy, zz);
+////        for(Chunk chunk : chunks) {
+////            v = chunk.getChunkLocation();
+////            if(v.getX() + Constants.CHUNK_SIZE*Constants.BLOCK_SIZE > xx && v.getZ() + Constants.CHUNK_SIZE*Constants.BLOCK_SIZE > zz  &&
+////                    v.getX() < playerPosition.getX() && v.getZ() < playerPosition.getZ()) {
+////                System.out.println(chunk);
+////            }
+////        }
 //
 //
 //        return xx;

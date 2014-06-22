@@ -137,51 +137,30 @@ public class Chunk {
                     }
 
                     if (blocks[x][y][z].getActive()) {
-                        putNormals(vertexNormalData);
-
-                        putVertices((x * 2) * Constants.BLOCK_SIZE, (-y * 2) * Constants.BLOCK_SIZE, (z * 2) * Constants.BLOCK_SIZE, vertexPositionData);
+                        vertexNormalData.put(BlockData.cubeNormals());
+                        vertexPositionData.put(BlockData.cubeVertices(xOffset, zOffset,(x * 2) * Constants.BLOCK_SIZE, (-y * 2) * Constants.BLOCK_SIZE, (z * 2) * Constants.BLOCK_SIZE));
 
                         if (blocks[x][y][z].type.GetID() == 1) {
-                            float[] textureCoords = new float[]{
-                                    0.0f, 0.0f, //Top left
-                                    0.0f, 0.05f, //Bottom left
-                                    0.05f, 0.05f, //Bottom right
-                                    0.05f, 0.0f, //Top right
-                            };
                             for (int i = 0; i < 6; i++) {
-                                vertexTextureData.put(textureCoords);
+                                vertexTextureData.put(BlockData.grass());
                             }
                         }
 
                         if (blocks[x][y][z].type.GetID() == 2) {
-                            float[] textureCoords = new float[]{
-                                    0.125f, 0.0f,
-                                    0.125f, 0.0625f,
-                                    0.1875f, 0.0625f,
-                                    0.1875f, 0.0f,
-                            };
                             for (int i = 0; i < 6; i++) {
-                                vertexTextureData.put(textureCoords);
+                                vertexTextureData.put(BlockData.dirt());
                             }
                         }
 
-
                         if (blocks[x][y][z].type.GetID() == 3) {
-                            float[] textureCoords = new float[]{
-                                    0.9375f, 0.8125f, //Top left
-                                    0.9375f, 0.875f, //Bottom left
-                                    1.0f, 0.875f, //Bottom right
-                                    1.0f, 0.8125f, //Top right
-                            };
                             for (int i = 0; i < 6; i++) {
-                                vertexTextureData.put(textureCoords);
+                                vertexTextureData.put(BlockData.water());
                             }
                         }
                     }
                 }
             }
         }
-
 
         vertexPositionData.flip();
         glBindBuffer(GL_ARRAY_BUFFER, VBOVertexHandle);
@@ -199,75 +178,6 @@ public class Chunk {
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 
-    public void putVertices(float tx, float ty, float tz, FloatBuffer vertexPositionData) {
-        float l_length = Constants.BLOCK_SIZE;
-        float l_height = Constants.BLOCK_SIZE;
-        float l_width = Constants.BLOCK_SIZE;
-        vertexPositionData.put(new float[]{
-                xOffset + l_length + tx, -l_height + ty, zOffset + -l_width + tz,
-                xOffset + -l_length + tx, -l_height + ty, zOffset + -l_width + tz,
-                xOffset + -l_length + tx, l_height + ty, zOffset + -l_width + tz,
-                xOffset + l_length + tx, l_height + ty, zOffset + -l_width + tz,
-
-                xOffset + -l_length + tx, -l_height + ty, zOffset + l_width + tz,
-                xOffset + l_length + tx, -l_height + ty, zOffset + l_width + tz,
-                xOffset + l_length + tx, l_height + ty, zOffset + l_width + tz,
-                xOffset + -l_length + tx, l_height + ty, zOffset + l_width + tz,
-
-                xOffset + l_length + tx, -l_height + ty, zOffset + l_width + tz,
-                xOffset + l_length + tx, -l_height + ty,zOffset +  -l_width + tz,
-                xOffset + l_length + tx, l_height + ty,zOffset +  -l_width + tz,
-                xOffset + l_length + tx, l_height + ty, zOffset + l_width + tz,
-
-                xOffset + -l_length + tx, -l_height + ty, zOffset + -l_width + tz,
-                xOffset + -l_length + tx, -l_height + ty,zOffset +  l_width + tz,
-                xOffset + -l_length + tx, l_height + ty, zOffset + l_width + tz,
-                xOffset + -l_length + tx, l_height + ty, zOffset + -l_width + tz,
-
-                xOffset + -l_length + tx, -l_height + ty, zOffset + -l_width + tz,
-                xOffset + l_length + tx, -l_height + ty, zOffset + -l_width + tz,
-                xOffset + l_length + tx, -l_height + ty, zOffset + l_width + tz,
-                xOffset + -l_length + tx, -l_height + ty,zOffset +  l_width + tz,
-
-                xOffset + l_length + tx, l_height + ty,zOffset +  -l_width + tz,
-                xOffset + -l_length + tx, l_height + ty, zOffset + -l_width + tz,
-                xOffset + -l_length + tx, l_height + ty, zOffset + l_width + tz,
-                xOffset + l_length + tx, l_height + ty, zOffset + l_width + tz
-
-        });
-    }
-
-    public void putNormals(FloatBuffer vertexNormalData) {
-        float[] normals = new float[] {
-                0.0f, 0.0f, -1.0f,
-                0.0f, 0.0f, -1.0f,
-                0.0f, 0.0f, -1.0f,
-                0.0f, 0.0f, -1.0f,
-                0.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f,
-                1.0f, 0.0f, 0.0f,
-                1.0f, 0.0f, 0.0f,
-                1.0f, 0.0f, 0.0f,
-                1.0f, 0.0f, 0.0f,
-                -1.0f, 0.0f, 0.0f,
-                -1.0f, 0.0f, 0.0f,
-                -1.0f, 0.0f, 0.0f,
-                -1.0f, 0.0f, 0.0f,
-                0.0f, -1.0f, 0.0f,
-                0.0f, -1.0f, 0.0f,
-                0.0f, -1.0f, 0.0f,
-                0.0f, -1.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 1.0f, 0.0f
-        };
-
-        vertexNormalData.put(normals);
-
-    }
 
     public boolean occlusionCulling(int x, int y, int z) {
         faceHidden[0] = x > 0 && blocks[x - 1][y][z].getActive();

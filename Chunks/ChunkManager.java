@@ -2,12 +2,10 @@ package com.matthewcairns.voxel.Chunks;
 
 import com.matthewcairns.voxel.Constants;
 import com.matthewcairns.voxel.Noise.SimplexNoise;
-import org.lwjgl.Sys;
 import org.lwjgl.util.vector.Vector3f;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
 
 /**
 * Created by Matthew Cairns on 08/06/2014.
@@ -38,15 +36,14 @@ public class ChunkManager {
         loadChunks();
         createChunks();
         renderChunks();
-        //checkChunkPlayerIsIn();
-        //checkChunksInView();
+        checkForNewChucks();
         unloadChunks();
 
         checkCollisions();
     }
 
     public void initChunks() {
-        chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), 0, 0, simplexNoise));
+        //chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), 0, 0, simplexNoise));
         for (int x = 0; x < Constants.VIEW_DISTANCE/2; x++) {
             for (int z = 0; z < Constants.VIEW_DISTANCE/2; z++) {
                 chunks.add(new Chunk(-playerPosition.getX(), -playerPosition.getZ(), x, z, simplexNoise));
@@ -96,13 +93,26 @@ public class ChunkManager {
 
     public void unloadChunks() {
         Iterator<Chunk> itr = chunks.iterator();
-
         while(itr.hasNext()) {
-            if (getPlayerDistanceFromChunk(itr.next()) > 2000) {
+            if (getPlayerDistanceFromChunk(itr.next()) > Constants.VIEW_DISTANCE*200) {
                 itr.remove();
 
             }
         }
+    }
+
+    private void checkForNewChucks() {
+//        chunkPlayerIsIn();
+
+    }
+
+    private boolean isChunkAtPosition(Vector3f pos) {
+        for(Chunk chunk : chunks) {
+            if(chunk.getChunkLocation() == pos) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public double getPlayerDistanceFromChunk(Chunk chunk) {
@@ -110,16 +120,24 @@ public class ChunkManager {
                         (playerPosition.getZ()+chunk.getChunkLocation().getZ())*(playerPosition.getZ()+chunk.getChunkLocation().getZ()));
     }
 
-    private void checkChunkPlayerIsIn() {
-        int chunk = (int)playerPosition.getX() / 16;
-        if(playerChunkLocation != chunk) {
-            chunks.clear();
-            initChunks();
-            playerChunkLocation = chunk;
-        }
-
-        System.out.println(chunk);
-    }
+//    private float chunkPlayerIsIn() {
+////        int xx = playerPosition.getX() / Constants.CHUNK_SIZE;
+////        int yy = playerPosition.getY() / Constants.CHUNK_SIZE;
+////        int zz = playerPosition.getZ() / Constants.CHUNK_SIZE;
+//
+//
+//        Vector3f v = new Vector3f(xx, yy, zz);
+//        for(Chunk chunk : chunks) {
+//            v = chunk.getChunkLocation();
+//            if(v.getX() + Constants.CHUNK_SIZE*Constants.BLOCK_SIZE > xx && v.getZ() + Constants.CHUNK_SIZE*Constants.BLOCK_SIZE > zz  &&
+//                    v.getX() < playerPosition.getX() && v.getZ() < playerPosition.getZ()) {
+//                System.out.println(chunk);
+//            }
+//        }
+//
+//
+//        return xx;
+//    }
 
     private void checkCollisions() {
 

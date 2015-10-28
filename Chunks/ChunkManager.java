@@ -31,17 +31,17 @@ public class ChunkManager {
 
     public void update(Vector3f playerPosition) {
         this.playerPosition = playerPosition;
-        if(!chunksInitiated) {
-            initChunks();
-            loadChunks();
-            createChunks();
-            System.out.println("ran chunksiitit");
-        }
+
+        initChunks();
+        loadChunks();
+        createChunks();
+        System.out.println("ran chunksiitit");
+
 
 
         renderChunks();
-        //checkForNewChucks();
-        //unloadChunks();
+        checkForNewChucks();
+        unloadChunks();
 
 //        checkCollisions();
     }

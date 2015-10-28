@@ -23,7 +23,7 @@ public class ChunkManager {
     private Vector3f playerPosition;
     private int playerChunkLocation=0;
 
-    SimplexNoise simplexNoise = new SimplexNoise(800, 0.71, 1234);
+    SimplexNoise simplexNoise = new SimplexNoise(800, 0.71, 74538);
 
     public ChunkManager() {
         chunks = new ArrayList<Chunk>();
@@ -31,15 +31,19 @@ public class ChunkManager {
 
     public void update(Vector3f playerPosition) {
         this.playerPosition = playerPosition;
-        if(!chunksInitiated)
+        if(!chunksInitiated) {
             initChunks();
-        loadChunks();
-        createChunks();
+            loadChunks();
+            createChunks();
+            System.out.println("ran chunksiitit");
+        }
+
+
         renderChunks();
         //checkForNewChucks();
-        unloadChunks();
+        //unloadChunks();
 
-        //checkCollisions();
+//        checkCollisions();
     }
 
     public void initChunks() {
@@ -90,6 +94,7 @@ public class ChunkManager {
             if (chunk.isChunkCreated()) {
                 if(frustum.cubeInFrustum(chunk.getChunkLocation().getX(), chunk.getChunkLocation().getY(), chunk.getChunkLocation().getZ(), (16*Constants.BLOCK_SIZE)*2)) {
                     chunk.drawChunk();
+
                     numChunks++;
                 }
             }
@@ -101,7 +106,7 @@ public class ChunkManager {
     public void unloadChunks() {
         Iterator<Chunk> itr = chunks.iterator();
         while(itr.hasNext()) {
-            if (getPlayerDistanceFromChunk(itr.next()) > Constants.VIEW_DISTANCE*200) {
+            if (getPlayerDistanceFromChunk(itr.next()) > Constants.VIEW_DISTANCE*50) {
                 itr.remove();
 
             }
@@ -109,7 +114,7 @@ public class ChunkManager {
     }
 
     private void checkForNewChucks() {
-        //chunkPlayerIsIn();
+        chunkPlayerIsIn();
 
     }
 
@@ -123,35 +128,30 @@ public class ChunkManager {
     }
 
     public double getPlayerDistanceFromChunk(Chunk chunk) {
-        return Math.sqrt((playerPosition.getX()+chunk.getChunkLocation().getX())*(playerPosition.getX()+chunk.getChunkLocation().getX()) +
-                        (playerPosition.getZ()+chunk.getChunkLocation().getZ())*(playerPosition.getZ()+chunk.getChunkLocation().getZ()));
+        float x = (playerPosition.getX()+chunk.getChunkLocation().getX())*(playerPosition.getX()+chunk.getChunkLocation().getX());
+        float y= (playerPosition.getZ()+chunk.getChunkLocation().getZ())*(playerPosition.getZ()+chunk.getChunkLocation().getZ());
+
+        double xy = Math.sqrt(x+y);
+
+        return xy;
     }
 
-//    private float chunkPlayerIsIn() {
-//        int xx = (int)Math.floor(playerPosition.getX() / Constants.CHUNK_SIZE);
-//        int zz = (int)Math.floor(playerPosition.getZ() / Constants.CHUNK_SIZE);
-//
-//        System.out.println(Math.floor(playerPosition.getX()) + ", " + Math.floor(playerPosition.getZ()));
-//        System.out.println(xx + ", " + zz);
-////        Vector3f v = new Vector3f(xx, yy, zz);
-////        for(Chunk chunk : chunks) {
-////            v = chunk.getChunkLocation();
-////            if(v.getX() + Constants.CHUNK_SIZE*Constants.BLOCK_SIZE > xx && v.getZ() + Constants.CHUNK_SIZE*Constants.BLOCK_SIZE > zz  &&
-////                    v.getX() < playerPosition.getX() && v.getZ() < playerPosition.getZ()) {
-////                System.out.println(chunk);
-////            }
-////        }
-//
-//
-//        return xx;
-//    }
+    private float chunkPlayerIsIn() {
+        int xx = (int)Math.floor(playerPosition.getX() / Constants.CHUNK_SIZE*Constants.BLOCK_SIZE);
+        int zz = (int)Math.floor(playerPosition.getZ() / Constants.CHUNK_SIZE*Constants.BLOCK_SIZE);
 
-    private void checkCollisions() {
+//        Vector3f v = new Vector3f(xx, yy, zz);
+//        for(Chunk chunk : chunks) {
+//            v = chunk.getChunkLocation();
+//            if(v.getX() + Constants.CHUNK_SIZE*Constants.BLOCK_SIZE > xx && v.getZ() + Constants.CHUNK_SIZE*Constants.BLOCK_SIZE > zz  &&
+//                    v.getX() < playerPosition.getX() && v.getZ() < playerPosition.getZ()) {
+//                System.out.println(chunk);
+//            }
+//        }
 
+
+        return xx;
     }
 
-    public int getNumberOfChunks() {
-        return renderedChunks;
-    }
 
 }

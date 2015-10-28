@@ -43,8 +43,6 @@ public class Chunk {
         xOffset = playerLocX + (bx*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
         zOffset = playerLocZ + (bz*(Constants.CHUNK_SIZE*2))*Constants.BLOCK_SIZE;
 
-        System.out.println(xOffset + ", " + zOffset);
-
         this.simplexNoise = simplexNoise;
 
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {

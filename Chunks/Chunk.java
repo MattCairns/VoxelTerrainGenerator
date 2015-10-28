@@ -87,7 +87,7 @@ public class Chunk {
     public void drawChunk() {
         //LOD Mipmapping setup
         glGenerateMipmap(GL_TEXTURE_2D);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
+      //  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 
@@ -125,12 +125,15 @@ public class Chunk {
         textureAtlas.bind();
 
         for (int x = 0; x < Constants.CHUNK_SIZE; x++) {
+
             for (int z = 0; z < Constants.CHUNK_SIZE; z++) {
+
                 for (int y = 0; y < Constants.CHUNK_SIZE; y++) {
 
                     if (occlusionCulling(x, y, z)) {
                         continue;
                     }
+
 
                     if (blocks[x + Constants.CHUNK_SIZE * (y + Constants.CHUNK_SIZE * z)].getActive()) {
                         vertexNormalData.put(BlockData.cubeNormals());

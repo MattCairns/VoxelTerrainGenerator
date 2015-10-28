@@ -33,10 +33,15 @@ public class ChunkManager {
 
     public void update(Vector3f playerPosition) {
         this.playerPosition = playerPosition;
+        if(!chunksInitiated) {
+            initChunks();
+            loadChunks();
+
 
         if(!chunksInitiated)
             initChunks();
         loadChunks();
+
         createChunks();
         renderChunks();
         //checkChunkPlayerIsIn();
